@@ -1,0 +1,75 @@
+<?php
+
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PagesController;
+use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\Route;
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider and all of them will
+| be assigned to the "web" middleware group. Make something great!
+|
+*/
+
+Route::get('/', [PagesController::class, "index"])->name('index');
+Route::get('/user/login', [PagesController::class, "login"]);
+Route::post('/userlogin', [PagesController::class, "userlogin"])->name('userlogin');
+Route::get('/resetpassword',[PagesController::class, 'resetpassword']);
+Route::get('/forgetpassword',[PagesController::class, 'forgetpassword']);
+Route::get('contribute', [PagesController::class, 'contribute']);
+Route::get('listen', [PagesController::class, 'listen']);
+Route::get('review', [PagesController::class, 'review']);
+Route::get('write', [PagesController::class, 'write']);
+Route::get('language', [PagesController::class, 'language']);
+Route::get('dataCollection', [PagesController::class, 'dataCollection']);
+Route::get('about', [PagesController::class, 'about']);
+
+Route::middleware('auth')->group(function () {
+    Route::get('profiles', [PagesController::class, 'profiles']);
+    Route::get('stats', [PagesController::class, 'stats']);
+    Route::get('change_info', [PagesController::class, 'changeinfo']);
+    Route::get('delete_profile', [PagesController::class, 'delete_profile']);
+    Route::get('download', [PagesController::class, 'download']);
+    Route::get('/profile', [ProfileController::class, 'updateprofile'])->name('profile.edit');
+    Route::post('/profile/update', [ProfileController::class, 'updateprofile'])->name('profile.update');
+    Route::post('/changeinfo/update', [ProfileController::class, 'updatechangeinfo'])->name('changeinfo.update');
+    Route::post('/profile.delete', [ProfileController::class, 'updatedelete'])->name('profile.delete');
+});
+// Admin login route (publicly accessible)
+Route::get('/admin/login', [AdminController::class, 'login'])->name('adminlogin');
+// Protected admin routes
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/admindashboard', [AdminController::class, 'admindashboard'])->name('admindashboard');
+    Route::get('/role', [AdminController::class, 'role'])->name('admin.role');
+    Route::get('/permission', [AdminController::class, 'permission'])->name('admin.permission');
+    Route::get('/usermanagement', [AdminController::class, 'usermanagement'])->name('admin.usermanagement');
+    Route::get('/rewardmanagement', [AdminController::class, 'rewardmanagement'])->name('admin.rewardmanagement');
+    Route::get('/transcriptionmanagement', [AdminController::class, 'transcriptionmanagement'])->name('admin.transcriptionmanagement');
+    Route::get('/languagemanagement', [AdminController::class, 'languagemanagement'])->name('admin.languagemanagement');
+    Route::get('/settingsmanagement', [AdminController::class, 'settingsmanagement'])->name('admin.settingsmanagement');
+    Route::get('/assignrole', [AdminController::class, 'assignrole'])->name('admin.assignrole');
+//    Route::post('/suspendUser', [AdminController::class, 'suspendUser'])->name('admin.suspendUser');
+//    Route::post('/activateUser', [AdminController::class, 'activateUser'])->name('admin.activateUser');
+    Route::post('/admin/suspend', [AdminController::class, 'suspendUser']);
+    Route::post('/admin/delete', [AdminController::class, 'deleteUser']);
+    Route::post('/admin/assign-role', [AdminController::class, 'assignRole']);
+    Route::post('/admin/make-admin', [AdminController::class, 'makeAdmin']);
+});
+
+
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/logout', function () {
+    Auth::logout();
+    session()->flush(); // Remove all session data
+    return redirect('/'); // Redirect to the homepage or login page
+})->name('logout');
+require __DIR__.'/auth.php';

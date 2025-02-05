@@ -187,31 +187,6 @@
 
 
 
-    function performAction(action, userId, role = null) {
-        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-        const data = {
-            action,
-            user_id: userId,
-            role,
-        };
-
-        fetch(`/api/admin/${action}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': csrfToken,
-            },
-            body: JSON.stringify(data),
-        })
-            .then(response => response.json())
-            .then(data => {
-                alert(data.message);
-                closeModal();
-                location.reload(); // Reload to reflect changes
-            })
-            .catch(error => console.error('Error:', error));
-    }
 
 </script>
 </html>

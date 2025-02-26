@@ -11,12 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('review', function (Blueprint $table) {
+        Schema::create('reviews', function (Blueprint $table) {
             $table->id();
-            $table->integer('userId');
-            $table->string('fileName');
-            $table->text('description')->nullable();
-            $table->text('review', 8, 2);
+            $table->integer('user_id');
+            $table->integer('transcription_id');
+            $table->string('language', 50);
+            $table->string('file_name');
+            $table->string('file_path');
+            $table->string('sentence_domain');
+            $table->text('sentence')->nullable();
+            $table->decimal('review_score', 8, 2)->unsigned();
+            $table->boolean('flag')->default(false);
+            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->timestamps();
         });
     }
@@ -26,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('review');
+        Schema::dropIfExists('reviews');
     }
 };

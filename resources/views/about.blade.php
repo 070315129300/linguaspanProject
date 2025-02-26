@@ -57,14 +57,16 @@
     <h2>Partners</h2><br>
     <p>Making <span>The Voice</span> a reality i no small task, and we <br>
     can't do it alone. Interested in partnering with us? <br>
-    We'd love to connect!</p>
-    <p class="section3-about-btn">Contact us</p>
+    We'd love to connect!</p><br>
+    <p class="section3-about-btn">Contact us</p><br>
+
 </section>
 <section class="section4-about">
     <div class="section4-about-head">
         <h2>Join us</h2>
     </div>
     <div class="section4-about-content">
+
 
         <div class="section4-about-main">
             <p class="section4-about-header">Community, Creatives and <br> Civil Society</p>
@@ -141,7 +143,7 @@
 <section class="section5-about">
     <div class="section5-about-main">
         <div class="section5-about-content">
-            <h2>See <span style="color: red">FAQs</span></h2>
+            <h2>See FAQs</h2>
             <p class="section5-about-content-p">
                 The Voice is an often, publicly accessible voice dataset, powered by volunteers from across the
                globe. Developers looking to build voice-enabled applications can use this dataset to train machine learning models.
@@ -149,7 +151,8 @@
         </div>
         <div class="section5-about-content">
             <div class="section5-about-contents-p">
-                <hr>
+                <hr style="border: 1px solid #F2876A;">
+                <br>
                 <p style="display: flex; justify-content: space-between">
                     <span class="section5-about-content-span">What is a Language?</span> <i class="fas fa-plus" id="toggleIcon" onclick="toggleText()"></i>
                 </p>
@@ -161,21 +164,27 @@
                 or signed, and follows specific grammar and syntax to ensure
                 that the message is understood by others within the same linguistic community.
             </span>
-                <hr>
+                <br>
+                <hr style="border: 1px solid #F2876A;">
+                <br>
             </div>
                 <div>
                     <p style="display: flex; justify-content: space-between">
                         <span class="section5-about-content-span">How can digital marketing help improve my <br>website's visibility?</span> <i class="fas fa-plus" id="toggleIcon" onclick="toggleText()"></i>
                     </p>
                     <span></span>
-                    <hr>
+                    <br>
+                    <hr style="border: 1px solid #F2876A;">
+                    <br>
                 </div>
             <div>
                 <p style="display: flex; justify-content: space-between">
                     <span class="section5-about-content-span">How long does it take to see results from <br>digital marketing efforts?</span> <i class="fas fa-plus" id="toggleIcon" onclick="toggleText()"></i>
                 </p>
                     <span></span>
-                <hr>
+                <br>
+                <hr style="border: 1px solid #F2876A;">
+                <br>
             </div>
 
               <div>
@@ -184,7 +193,9 @@
                   </p>
 
                   <span></span>
-                  <hr>
+                  <br>
+                  <hr style="border: 1px solid #F2876A;">
+
               </div>
         </div>
     </div>

@@ -4,6 +4,7 @@
 <section class="section1info">
     <h1>Change information</h1>
     <p>To change or edit your email, email us at <span style="color: red">thevoice@gmail.com</span> </p>
+    <br>
     <div class="section2-profile-content-form">
         @if(session('success'))
             <p style="color: green;">{{ session('success') }}</p>
@@ -20,11 +21,15 @@
             <input type="text" name="email" value="{{ $user->email ?? '' }}"> <br>
             <label for="">Enter Alternative Email</label><br>
             <input type="text" name="a_email" value="{{ $user->email ?? '' }}"><br><br>
-            <button type="submit">send</button>
+            <button type="submit">send an email</button>
         </form>
+
+
     </div>
-    <br><br><br>
+    <br><br>
     <hr>
-    <p class="section-delete-profile"><i class="far fa-trash-alt"></i>
+    <p class="section-delete-profile"><i class="iconsax" icon-name="trash" style="font-size: 15px"></i>
         <a href="{{url('delete_profile')}}">Delete Profile</a></p>
 </section>
+
+@include("footer")

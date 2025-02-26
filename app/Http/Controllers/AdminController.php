@@ -29,7 +29,7 @@ public function admindashboard(){
         $transcriberCount = User::where('role', 'transcriber')->count();
 
         // Fetch only users with the role 'admin' and paginate
-        $users = User::where('role', 'admin')->paginate(10);
+        $users = User::where('role', 'admin')->paginate(2);
 
         return view('dashboard/Roles', compact('users', 'adminCount', 'userCount', 'moderatorCount', 'transcriberCount'));
     }
@@ -111,9 +111,9 @@ public function permission(){
 
 //         Paginate the filtered users (10 users per page)
         $users = $query->paginate(10);
-
+        $usr = $query->get();
         // Return to the view with filtered data
-        return view('dashboard.transcriptionMgt', compact('users'));
+        return view('dashboard.transcriptionMgt', compact('users', 'usr'));
     }
 
 public function languagemanagement(){
@@ -159,8 +159,9 @@ public function settingsmanagement(){
     }
 
 
-    public function suspendUser(Request $request, $userId)
+    public function suspendUser($userId)
     {
+
         if (auth()->user()->role !== 'admin') {
             return redirect()->route('index')->with('error', 'Unauthorized access!');
         }
@@ -226,6 +227,30 @@ public function settingsmanagement(){
         $user->role =$request->role;
         $user->save();
         return redirect()->back()->with('success', "User role updated to {$request->role} successfully!");
+    }
+
+    public function inviteAdmin(Request $request)
+    {
+        // Validate incoming request
+        $request->validate([
+            'fullname' => 'required|string|max:255',
+            'user_type' => 'required|string',
+            'email' => 'required|email|unique:users,email',
+        ]);
+
+        // Save data to the database (e.g., create a new User)
+        $user = User::create([
+            'fullname' => $request->fullname,
+            'user_type' => $request->user_type,
+            'email' => $request->email,
+            'password' => "1234567890",
+        ]);
+
+//        // Send an email to the invited admin
+//        Mail::to($user->email)->send(new AdminInviteMail($user));
+
+        // Return a success message or redirect
+        return back()->with('success', 'Admin invited successfully!');
     }
 
 }

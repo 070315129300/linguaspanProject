@@ -43,7 +43,9 @@
                                     <input type="search" placeholder="search">
                                 </div>
                                 <div class="table-header-right">
-                                    <button type="submit"><i class="iconsax" icon-name="document-download"></i> download</button>
+                                    <button onclick="exportTableToCSV()">
+                                        <i class="iconsax" icon-name="document-download"></i> Download CSV
+                                    </button>
 
                                 </div>
                             </div>
@@ -79,7 +81,32 @@
                     <tfoot>
                     <tr>
                         <td colspan="5">
-                            <button class="btn">next</button>
+{{--                            <div class="pagination-container">--}}
+{{--                                <!-- Left side: Showing the current page and total -->--}}
+{{--                                <div class="pagination-info">--}}
+{{--                                    {{ $users->firstItem() }}-{{ $users->lastItem() }} of {{ $users->total() }}--}}
+{{--                                </div>--}}
+
+{{--                                <!-- Middle: Page numbers -->--}}
+{{--                                <div class="pagination-links">--}}
+{{--                                    {{ $users->appends(request()->query())->links() }}--}}
+{{--                                </div>--}}
+
+{{--                                <!-- Right side: Previous & Next buttons -->--}}
+{{--                                <div class="pagination-nav">--}}
+{{--                                    @if ($users->onFirstPage())--}}
+{{--                                        <span class="disabled"><i class="iconsax" icon-name="arrow-left" style="font-size: 15px;"></i> Previous</span>--}}
+{{--                                    @else--}}
+{{--                                        <a href="{{ $users->previousPageUrl() }}" class="pagination-btn"><i class="iconsax" icon-name="arrow-left" style="font-size: 15px;"></i> Previous</a>--}}
+{{--                                    @endif--}}
+
+{{--                                    @if ($users->hasMorePages())--}}
+{{--                                        <a href="{{ $users->nextPageUrl() }}" class="pagination-btn">Next <i class="iconsax" icon-name="arrow-right" style="font-size: 15px;"></i></a>--}}
+{{--                                    @else--}}
+{{--                                        <span class="disabled">Next</span>--}}
+{{--                                    @endif--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
 
                         </td>
                     </tr>
@@ -98,7 +125,9 @@
                                     <input type="search" placeholder="search">
                                 </div>
                                 <div class="table-header-right">
-                                    <button type="submit"><i class="iconsax" icon-name="document-download"></i> download</button>
+                                    <button onclick="exportTableToCSV()">
+                                        <i class="iconsax" icon-name="document-download"></i> Download CSV
+                                    </button>
                                 </div>
                             </div>
                         </td>
@@ -107,7 +136,7 @@
                         <th>Translstion:From</th>
                         <th>To</th>
                         <th>Translation Rate</th>
-                        <th>Translation Rate</th>
+                        <th>Translation Status</th>
 
                     </tr>
                     </thead>
@@ -129,7 +158,32 @@
                     <tfoot>
                     <tr>
                         <td colspan="6">
-                            <button class="btn">next</button>
+{{--                            <div class="pagination-container">--}}
+{{--                                <!-- Left side: Showing the current page and total -->--}}
+{{--                                <div class="pagination-info">--}}
+{{--                                    {{ $users->firstItem() }}-{{ $users->lastItem() }} of {{ $users->total() }}--}}
+{{--                                </div>--}}
+
+{{--                                <!-- Middle: Page numbers -->--}}
+{{--                                <div class="pagination-links">--}}
+{{--                                    {{ $users->appends(request()->query())->links() }}--}}
+{{--                                </div>--}}
+
+{{--                                <!-- Right side: Previous & Next buttons -->--}}
+{{--                                <div class="pagination-nav">--}}
+{{--                                    @if ($users->onFirstPage())--}}
+{{--                                        <span class="disabled"><i class="iconsax" icon-name="arrow-left" style="font-size: 15px;"></i> Previous</span>--}}
+{{--                                    @else--}}
+{{--                                        <a href="{{ $users->previousPageUrl() }}" class="pagination-btn"><i class="iconsax" icon-name="arrow-left" style="font-size: 15px;"></i> Previous</a>--}}
+{{--                                    @endif--}}
+
+{{--                                    @if ($users->hasMorePages())--}}
+{{--                                        <a href="{{ $users->nextPageUrl() }}" class="pagination-btn">Next <i class="iconsax" icon-name="arrow-right" style="font-size: 15px;"></i></a>--}}
+{{--                                    @else--}}
+{{--                                        <span class="disabled">Next</span>--}}
+{{--                                    @endif--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
                         </td>
                     </tr>
                     </tfoot>
@@ -165,11 +219,6 @@
             <div class="modal" id="actionModal">
                 <div class="modal-content">
                     <!-- Buttons to open modals -->
-                    <p class="" onclick="openModal('approve' )">Enable</p>
-                    <p onclick="openModal('delete')">Disable </p>
-                    <p onclick="openModal('assign-role')">Set Priority level</p>
-                    <p onclick="openModal('activate-admin')">Delete </p>
-
                 </div>
             </div>
 

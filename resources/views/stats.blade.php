@@ -38,15 +38,17 @@
                     <option value="">All Language</option>
                 </select>
             </div>
-            <p class="section-stat-lineheight">01 <span>1</span> George Musa </p>
+            <p class="section-stat-lineheight">01 <img src="img/elispe.png" alt=""> George Musa </p>
             <hr>
-            <p class="section-stat-lineheight">02 <span>2</span> George Musa </p>
+            <p class="section-stat-lineheight">02 <img src="img/elispe.png" alt=""> George Musa </p>
             <hr>
-            <p class="section-stat-lineheight">03 <span>2</span> George Musa </p>
+            <p class="section-stat-lineheight">03 <img src="img/elispe.png" alt=""> George Musa </p>
             <hr>
-            <p class="section-stat-lineheight">04 <span>4</span> George Musa </p>
+            <p class="section-stat-lineheight">03 <img src="img/elispe.png" alt=""> George Musa </p>
             <hr>
-            <p class="section-stat-lineheight">05 <span>5</span> George Musa </p>
+            <p class="section-stat-lineheight">04 <img src="img/elispe.png" alt=""> George Musa </p>
+            <hr>
+            <p class="section-stat-lineheight">05 <img src="img/elispe.png" alt=""> George Musa </p>
             <hr>
 
         </div>

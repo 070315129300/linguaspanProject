@@ -66,7 +66,9 @@
                                                 <option value="hausa" {{ request('language') == 'hausa' ? 'selected' : '' }}>Hausa</option>
                                                 <option value="igbo" {{ request('language') == 'igbo' ? 'selected' : '' }}>Igbo</option>
                                             </select>
-                                            <button type="submit"><i class="iconsax" icon-name="document-download"></i> download</button>
+                                            <button onclick="exportTableToCSV()">
+                                                <i class="iconsax" icon-name="document-download"></i> Download CSV
+                                            </button>
                                         </div>
                                     </div>
                                     </form>
@@ -104,7 +106,32 @@
                     <tfoot>
                     <tr>
                         <td colspan="6">
-                            {{ $users->appends(request()->query())->links() }}
+                            <div class="pagination-container">
+                                <!-- Left side: Showing the current page and total -->
+                                <div class="pagination-info">
+                                    {{ $users->firstItem() }}-{{ $users->lastItem() }} of {{ $users->total() }}
+                                </div>
+
+                                <!-- Middle: Page numbers -->
+                                <div class="pagination-links">
+                                    {{ $users->appends(request()->query())->links() }}
+                                </div>
+
+                                <!-- Right side: Previous & Next buttons -->
+                                <div class="pagination-nav">
+                                    @if ($users->onFirstPage())
+                                        <span class="disabled"><i class="iconsax" icon-name="arrow-left" style="font-size: 15px;"></i> Previous</span>
+                                    @else
+                                        <a href="{{ $users->previousPageUrl() }}" class="pagination-btn"><i class="iconsax" icon-name="arrow-left" style="font-size: 15px;"></i> Previous</a>
+                                    @endif
+
+                                    @if ($users->hasMorePages())
+                                        <a href="{{ $users->nextPageUrl() }}" class="pagination-btn">Next <i class="iconsax" icon-name="arrow-right" style="font-size: 15px;"></i></a>
+                                    @else
+                                        <span class="disabled">Next</span>
+                                    @endif
+                                </div>
+                            </div>
 
                         </td>
                     </tr>
@@ -115,7 +142,7 @@
         </div>
         <!-- Modals -->
         <section>
-            <!-- Login Modal -->
+            <!-- invite user Modal -->
             <div class="login-modal" id="loginModal">
                 <div class="login-modal-content">
                     <span class="close-modal" id="closeModal">&times;</span>
@@ -134,16 +161,9 @@
             </div>
 
             <!-- Action Modal -->
-            <div class="modal" id="actionModal">
-                <div class="modal-content">
-                    <!-- Buttons to open modals -->
-                    <p class="" onclick="openModal('approve', '{{ $user->id }}', '{{ $user->fullName }}')">Suspend {{ $user->fullName }}</p>
-                    <p onclick="openModal('delete', '{{ $user->id }}', '{{ $user->fullName }}')">View More  {{ $user->fullName }}</p>
-                    <p onclick="openModal('assign-role', '{{ $user->id }}', '{{ $user->fullName }}')">Assign Role</p>
-                    <p onclick="openModal('activate-admin', '{{ $user->id }}', '{{ $user->fullName }}')">Deactivate {{ $user->fullName }}</p>
-                    <p onclick="openModal('activate-admin', '{{ $user->id }}', '{{ $user->fullName }}')">Reset Password {{ $user->fullName }}</p>
 
-                </div>
+            <div class="modal" id="actionModal">
+                <div class="modal-content"></div> <!-- This will be populated dynamically -->
             </div>
 
             <!-- Reusable Modal -->
@@ -168,63 +188,10 @@
             </div>
 
         </section>
-
-{{--stop here--}}
     </div>
-
 </div>
 </body>
-<script>
-    // Get all the list items and table content divs
-    const listItems = document.querySelectorAll('#user-categories li');
-    const tableContents = document.querySelectorAll('.table-content');
 
-    // Add click event to each list item
-    listItems.forEach(item => {
-        item.addEventListener('click', () => {
-            // Get the category from the clicked list item
-            const category = item.getAttribute('data-category');
-
-            // Show the relevant table and hide others
-            tableContents.forEach(tableContent => {
-                if (tableContent.getAttribute('data-category') === category) {
-                    tableContent.style.display = 'block';
-                } else {
-                    tableContent.style.display = 'none';
-                }
-            });
-        });
-    });
-
-</script>
-<script>
-    function showTable(category) {
-        // Hide all tables
-        document.querySelectorAll('.table-content').forEach(table => {
-            table.style.display = 'none';
-        });
-
-        // Remove "selected" class from all list items
-        document.querySelectorAll('#user-categories li').forEach(li => {
-            li.classList.remove('selected');
-        });
-
-        // Display the selected table and add "selected" class to the clicked li
-        document.querySelector(`.table-content[data-category="${category}"]`).style.display = 'block';
-        document.querySelector(`#user-categories li[data-category="${category}"]`).classList.add('selected');
-    }
-
-    // Initialize by showing the first table (e.g., General Users)
-    showTable('general');
-</script>
-
-<script>
-    document.querySelectorAll('select').forEach(select => {
-        select.addEventListener('change', () => {
-            document.getElementById('filter-form').submit();
-        });
-    });
-</script>
 <script src="js/adminscripts.js"></script>
 
 </html>

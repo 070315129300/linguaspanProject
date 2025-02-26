@@ -1,23 +1,12 @@
 @include('navbar')
-{{-- </section>--}}
-{{--<section class="sectionnavbar">--}}
-{{--    <div>--}}
-{{--        <ul>--}}
-{{--            <li id="speak-tab" class="active"><img src="img/microphone.png" alt=""> Speak</li>--}}
-{{--            <li id="listen-tab"><img src="img/sound4.png" alt=""> Listen</li>--}}
-{{--            <li id="write-tab"><img src="img/message-edit.png" alt=""> Write</li>--}}
-{{--            <li id="review-tab"><img src="img/firstline.png" alt=""> Review</li>--}}
-{{--        </ul>--}}
-{{--    </div>--}}
 
-{{--</section>--}}
 <section class="sectionnavbar">
     <table>
         <tr>
-            <td class="hoverable active"><a href="{{url('contribute')}}" ><img src="img/microphone.png" alt="" width="15px" height="15px"> Speak</a></td>
-            <td class="hoverable"><a href="{{url('listen')}}"><img src="img/sound4.png" alt="" width="15px" height="15px"> Listen</a></td>
-            <td class="hoverable"><a href="{{url('write')}}"><img src="img/message-edit.png" alt="" width="15px" height="15px">  Write</a> </td>
-            <td class="hoverable"><a href="{{url('review')}}"><img src="img/firstline.png" alt="" width="15px" height="15px">  Review</a> </td>
+            <td class="hoverable active"><a href="{{url('contribute')}}" ><i class="iconsax" icon-name="mic-1" style="font-size: 15px"></i> Speak</a></td>
+            <td class="hoverable "><a href="{{url('listen')}}"><i class="iconsax" icon-name="sound" style="font-size: 15px"></i> Listen</a></td>
+            <td class="hoverable"><a href="{{url('write')}}"><i class="iconsax" icon-name="message-edit" style="font-size: 15px"></i>  Write</a> </td>
+            <td class="hoverable "><a href="{{url('review')}}"><i class="iconsax" icon-name="first-character" style="font-size: 15px"></i>  Review</a> </td>
         </tr>
     </table>
 </section>
@@ -34,27 +23,18 @@
             <span>4</span>
         </div>
     </div>
-    <br>
+
     <div class="speak-content-mic"><img src="img/component4.png" alt=""></div>
     <div class="speak-content-ul">
-{{--        <div class="quicktestcayleb">--}}
-{{--            <p><img src="img/message-question.png" alt=""> Guidelines</p>--}}
-{{--            <p><img src="img/message-question.png" alt=""> Guidelines</p>--}}
-{{--            <p><img src="img/flag.png" alt="">Report</p>--}}
-{{--            <p><img src="img/keyboard-open.png" alt="">Shortcut</p>--}}
-{{--        </div>--}}
-{{--        <div>--}}
-{{--            <p><img src="img/forward.png" alt="">Skip</p>--}}
-{{--            <p>Submit</p>--}}
-{{--        </div>--}}
-        <div class="quicktestcayleb">
-            <p> Guidelines</p>
-            <p> Guidelines</p>
-            <p>Report</p>
-            <p>Shortcut</p>
+
+        <div class="section-speak-guidelines">
+            <p><i class="iconsax" icon-name="question-message" style="font-size: 15px;"></i> Guidelines</p>
+            <p><i class="iconsax" icon-name="flag-1" style="font-size: 15px;"></i> Report</p>
+            <p><i class="iconsax" icon-name="keyboard-2" style="font-size: 15px;"></i> Shortcut</p>
         </div>
-        <div>
-            <span>Skip</span>
+        <div class="section-speak-skip">
+            <p><i class="iconsax" icon-name="media-forward" style="font-size: 15px;"></i> Skip</p>
+
             <p>Submit</p>
         </div>
     </div>

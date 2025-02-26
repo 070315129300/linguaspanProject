@@ -11,7 +11,7 @@
         If your request is approved, we will contact those who have downloaded the dataset and request they remove your voice recordings as
         well.</p>
     <form action="{{ route('profile.delete') }}" method="POST" enctype="multipart/form-data"><br>
-        <input type="checkbox"><span><span style="color: red"> * </span> I want to keep my recordings with TheVoice</span>
+        <input type="checkbox"><span> * I want to keep my recordings with TheVoice</span>
         <br><br>
         <button type="submit">Delete Profile</button>
     </form>

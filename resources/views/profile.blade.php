@@ -1,16 +1,18 @@
 @include('navbar')
 @include("minnavbar")
 <section class="section1-profile">
-    <h1>Profile</h1>
     <div class="section1-profile-main">
+          <h1>Profile</h1>
             <p>
                 By providing some information about yourself, the audio data you submit to Common Voice will be more useful to Speech Recognition engines that use this data to improve their accuracy.
                 Anonymize user data like age, gender, and accent helps improve the audio data used to train the accuracy of speech recognition engines. Your username and email will never be associated with your submitted data, and you can choose whether to make your username public or anonymous.
             </p>
-            <div>
-                <img src="img/frame.png" alt="">
-            </div>
     </div>
+
+        <div  class="section1-profile-img">
+            <img src="img/frame.png" alt="">
+        </div>
+
 </section>
 <section class="section2-profile-content">
     <div class="section2-profile-content-img">

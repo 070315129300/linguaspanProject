@@ -6,6 +6,13 @@
             <a href="/" class="footerlogo"><span style="">L</span>inguaSpan</a>
             <p>content available under a creative<br>  common license</p>
             <br>
+            <br>
+            <div class="social-icons">
+                <a href="#"><img src="img/facebook.png" alt=""></a>
+                <a href="#"><img src="img/x.png" alt=""></a>
+                <a href="#"><img src="img/instagram.png" alt=""></a>
+                {{--            <a href="#"><i class="fab fa-linkedin"></i></a>--}}
+            </div>
 
 
         </div>
@@ -18,8 +25,8 @@
             <div class="border-vertical-line"></div>
             <div class="border-vertical2">
                 <br>
-                <p><a href="">About</a></p><br>
-                <p><a href="">Github</a></p>
+                <p><a href="" style="color: white">About</a></p><br>
+                <p><a href="" style="color: white">Github</a></p>
             </div>
         </div>
 

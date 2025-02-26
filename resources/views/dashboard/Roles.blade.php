@@ -24,23 +24,27 @@
             <div class="dashboard-role-card">
                 <div><a href="{{url("permission")}}" class="href_black">
                     <p>Admin</p>
-                    <span>15 permissions</span>
+                    <span>151 permissions</span>
                     </a>
+                    <i class="iconsax" icon-name="chevron-right" style="font-size: 20px;"></i>
                 </div>
                 <div><a href="" class="href_black">
                     <p>Moderator</p>
                     <span>15 permissions</span>
                     </a>
+                    <i class="iconsax" icon-name="chevron-right" style="font-size: 20px;"></i>
                 </div>
                 <div><a href="" class="href_black">
                     <p>Transcriber</p>
                     <span>15 permissions</span>
                     </a>
+                    <i class="iconsax" icon-name="chevron-right" style="font-size: 20px;"></i>
                 </div>
                 <div><a href="" class="href_black">
                     <p>Viewers</p>
                     <span>15 permissions</span>
                     </a>
+                    <i class="iconsax" icon-name="chevron-right" style="font-size: 20px;"></i>
                 </div>
             </div>
         </section>
@@ -50,15 +54,15 @@
 {{--        <li>Transcribers: {{ $transcriberCount }}</li>--}}
         <br>
         <div>
-            <h3>Admin</h3>
+            <h3>Admins</h3>
 
         </div>
 
-        <div class="table-content" data-category="transcribers" >
+        <div class="table-contents" data-category="transcribers" >
             <table class="user-mgt-table">
                 <thead>
                 <tr>
-                    <td colspan="6" >
+                    <td colspan="4" >
                         <div class="table-header">
                             <div class="table-header-right">
                                 <input type="search" placeholder="search">
@@ -66,17 +70,19 @@
 
                             </div>
                             <div class="table-header-right">
-                                <button><i class="iconsax" icon-name="document-download"></i> download</button>
+                                <button onclick="exportTableToCSV()">
+                                    <i class="iconsax" icon-name="document-download"></i> Download CSV
+                                </button>
                             </div>
+
                         </div>
                     </td>
                 </tr>
                 <tr>
                     <th>Name</th>
-                    <th>preferred lang</th>
                     <th>Role</th>
-                    <th>Status</th>
-                    <th>Actions</th>
+                    <th style="text-align: center">Status</th>
+                    <th style="text-align: center">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -84,22 +90,47 @@
                     <tr>
 
                         <td>{{ $user->fullName }}</td>
-                        <td>{{ $user->language }}</td>
                         <td>{{ ucfirst($user->role) }}</td>
-                        <td>{{ $user->status ?? 'Unknown' }}</td>
-                        <td onclick="ActionModal(event)"
+                        <td style="text-align: center">{{ $user->status ?? 'Unknown' }}</td>
+                        <td style="text-align: center" onclick="ActionModal(event)"
                             class="action-buttons"
                             data-user-id="{{ $user->id }}"
                             data-full-name="{{ $user->fullName }}">
-                            <i class="iconsax" icon-name="menu-meatballs"></i>
+                            <i class="iconsax" icon-name="menu-meatballs" ></i>
                         </td>
                   </tr>
                 @endforeach
                 </tbody>
                 <tfoot>
                 <tr>
-                    <td colspan="6">
-                        {{ $users->appends(request()->query())->links() }}
+                    <td colspan="4">
+                        <div class="pagination-container">
+                            <!-- Left side: Showing the current page and total -->
+                            <div class="pagination-info">
+                                {{ $users->firstItem() }}-{{ $users->lastItem() }} of {{ $users->total() }}
+                            </div>
+
+                            <!-- Middle: Page numbers -->
+                            <div class="pagination-links">
+                                {{ $users->appends(request()->query())->links() }}
+                            </div>
+
+                            <!-- Right side: Previous & Next buttons -->
+                            <div class="pagination-nav">
+                                @if ($users->onFirstPage())
+                                    <span class="disabled"><i class="iconsax" icon-name="arrow-left" style="font-size: 15px;"></i> Previous</span>
+                                @else
+                                    <a href="{{ $users->previousPageUrl() }}" class="pagination-btn"><i class="iconsax" icon-name="arrow-left" style="font-size: 15px;"></i> Previous</a>
+                                @endif
+
+                                @if ($users->hasMorePages())
+                                    <a href="{{ $users->nextPageUrl() }}" class="pagination-btn">Next <i class="iconsax" icon-name="arrow-right" style="font-size: 15px;"></i></a>
+                                @else
+                                    <span class="disabled">Next</span>
+                                @endif
+                            </div>
+                        </div>
+{{--                        {{ $users->appends(request()->query())->links() }}--}}
                     </td>
                 </tr>
                 </tfoot>
@@ -108,7 +139,7 @@
 
 
         <section>
-            <!-- Login Modal -->
+            <!-- invite admin Modal -->
             <div class="login-modal" id="loginModal">
                 <div class="login-modal-content">
                     <span class="close-modal" id="closeModal">&times;</span>
@@ -142,17 +173,11 @@
             <!-- Action Modal -->
             <div class="modal" id="actionModal">
                 <div class="modal-content">
-                    <p><a href="{{ url('permission') }}" class="href_black">Role & Permissions</a></p>
-
-                    <!-- Buttons to open modals -->
-                        <p class="" onclick="openModal('suspend', '{{ $user->id }}', '{{ $user->fullName }}')">Suspend {{ $user->fullName }}</p>
-                        <p onclick="openModal('delete', '{{ $user->id }}', '{{ $user->fullName }}')">Delete Admin {{ $user->fullName }}</p>
-                        <p onclick="openModal('assign-role', '{{ $user->id }}', '{{ $user->fullName }}')">Assign Role</p>
-                    <p onclick="openModal('make-admin', '{{ $user->id }}', '{{ $user->fullName }}')">Make Admin</p>
-                        <p onclick="openModal('activate-admin', '{{ $user->id }}', '{{ $user->fullName }}')">Activate {{ $user->fullName }}</p>
 
                 </div>
             </div>
+
+
 
             <!-- Reusable Modal -->
             <div class="login-modal" id="dynamicModal">
@@ -173,20 +198,6 @@
 </body>
 <script src="js/adminscripts.js"></script>
 <script>
-    // function ActionModal(event) {
-    //     // Get the clicked element
-    //     const target = event.currentTarget;
-    //
-    //     // Retrieve the user ID and full name from data attributes
-    //     const userId = target.getAttribute('data-user-id');
-    //     const fullName = target.getAttribute('data-full-name');
-    //
-    //     // Open the modal and pass the values
-    //     openModal('action', userId, fullName);
-    // }
-
-
-
 
 </script>
 </html>

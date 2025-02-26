@@ -19,8 +19,11 @@ return new class extends Migration
             $table->string('language');
             $table->string('quality');
             $table->string('hours');
-            $table->text('description')->nullable();
+            $table->string('sentence_domain');
+            $table->text('sentence')->nullable();
             $table->text('review', 8, 2);
+            $table->integer('updatedby-userId');
+            $table->string('status');
             $table->timestamps();
         });
     }

@@ -116,12 +116,19 @@ li{
     line-height: 0.8;
     width: 20%;
     border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
 }
 .dashboard-role-card div span{
     font-size: 12px;
+    color: #AFAFB0;
 }
-.dashboard-role-card div a{
-    color: black;
+.dashboard-role-card div i{
+    margin-top: 10%;
+    color: #AFAFB0;
+}
+.dashboard-role-card div a p{
+    color: #4f4f4f;
     text-decoration: none;
 }
 
@@ -434,6 +441,70 @@ tr:hover {
 }
 settingsdiv1 p{
     margin-left: 65%;
+}
+
+.pagination-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 10px;
+
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.pagination-info {
+    font-size: 14px;
+    color: #333;
+}
+
+.pagination-links .pagination {
+    display: flex;
+    gap: 5px;
+}
+
+.pagination-links .pagination li {
+    list-style: none;
+}
+
+.pagination-links .pagination a,
+.pagination-links .pagination span {
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 5px;
+    background: #FF53311A;
+    color: #F2876A;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.pagination-links .pagination a:hover {
+    background: #4f4f4f;
+}
+
+.pagination-nav {
+    display: flex;
+    gap: 10px;
+}
+
+.pagination-btn {
+    padding: 6px 10px;
+    background: white;
+    color: #DADADA;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.pagination-btn:hover {
+    background: #4f4f4f;
+}
+
+.disabled {
+    padding: 6px 10px;
+    background: #ccc;
+    color: #666;
+    border-radius: 5px;
 }
 
 

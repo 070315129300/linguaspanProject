@@ -11,17 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('listens', function (Blueprint $table) {
+        Schema::create('rewards', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->string('language', 50);
-            $table->string('file_name');
-            $table->string('file_path');
-            $table->string('sentence_domain');
-            $table->text('description')->nullable();
-            $table->decimal('audio_duration', 8, 2)->unsigned();
+            $table->integer('user_id')->nullable();
+            $table->integer('admin_id')->nullable();
+            $table->string('reward_name');
             $table->integer('hours')->unsigned();
-            $table->boolean('flag')->default(false);
+            $table->text('description')->nullable();
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->timestamps();
         });
@@ -32,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('listens');
+        Schema::dropIfExists('rewards');
     }
 };

@@ -11,12 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('speak', function (Blueprint $table) {
+        Schema::create('speaks', function (Blueprint $table) {
             $table->id();
-            $table->integer('userId');
-            $table->string('fileName');
+            $table->integer('user_id')->constrained('users')->onDelete('cascade');
+            $table->string('language', 50);
+            $table->string('file_name');
+            $table->string('file_path');
+            $table->string('sentence_domain');
             $table->text('description')->nullable();
-            $table->text('speak', 8, 2);
+            $table->decimal('speak_duration', 8, 2)->unsigned();
+            $table->integer('hours')->unsigned();
+            $table->boolean('flag')->default(false);
+            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->timestamps();
         });
     }
@@ -26,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('speak');
+        Schema::dropIfExists('speaks');
     }
 };

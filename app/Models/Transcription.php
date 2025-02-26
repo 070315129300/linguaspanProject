@@ -8,4 +8,18 @@ use Illuminate\Database\Eloquent\Model;
 class Transcription extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'userId',
+        'fileName',
+        'type',
+        'language',
+        'quality',
+        'hours',
+        'sentence_domain',
+        'sentence',
+        'review',
+        'updated_by_user_id',
+        'status'
+    ];
 }

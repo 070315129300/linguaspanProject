@@ -13,10 +13,16 @@ return new class extends Migration
     {
         Schema::create('writes', function (Blueprint $table) {
             $table->id();
-            $table->integer('userId');
-            $table->string('fileName');
-            $table->text('description')->nullable();
-            $table->text('write', 8, 2);
+            $table->integer('user_id');
+            $table->string('language', 50);
+            $table->string('file_name');
+            $table->string('file_path');
+            $table->text('sentence')->nullable();
+            $table->string('sentence_domain');
+            $table->string('citation')->nullable();
+            $table->decimal('write_duration', 8, 2)->unsigned();
+            $table->boolean('flag')->default(false);
+            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->timestamps();
         });
     }

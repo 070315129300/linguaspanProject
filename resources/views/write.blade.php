@@ -3,21 +3,21 @@
 <section class="sectionnavbar">
     <table>
         <tr>
-            <td class="hoverable "><a href="{{url('contribute')}}" ><img src="img/microphone.png" alt="" width="15px" height="15px"> Speak</a></td>
-            <td class="hoverable "><a href="{{url('listen')}}"><img src="img/sound4.png" alt="" width="15px" height="15px"> Listen</a></td>
-            <td class="hoverable active"><a href="{{url('write')}}"><img src="img/message-edit.png" alt="" width="15px" height="15px">  Write</a> </td>
-            <td class="hoverable "><a href="{{url('review')}}"><img src="img/firstline.png" alt="" width="15px" height="15px">  Review</a> </td>
+            <td class="hoverable "><a href="{{url('contribute')}}" ><i class="iconsax" icon-name="mic-1" style="font-size: 15px"></i> Speak</a></td>
+            <td class="hoverable "><a href="{{url('listen')}}"><i class="iconsax" icon-name="sound" style="font-size: 15px"></i> Listen</a></td>
+            <td class="hoverable active"><a href="{{url('write')}}"><i class="iconsax" icon-name="message-edit" style="font-size: 15px"></i>  Write</a> </td>
+            <td class="hoverable "><a href="{{url('review')}}"><i class="iconsax" icon-name="first-character" style="font-size: 15px"></i>  Review</a> </td>
         </tr>
     </table>
 </section>
 <section class="write-height write-section-content" id="write-section" >
 
     <div class="write-content-P">
-        <p class="write-content-P-content">Single sentence</p>
-        <p>Bulk sentence Submission</p>
+        <p class="write-content-P-content"><i class="iconsax" icon-name="document-favorite" style="font-size: 15px"></i> Single sentence</p>
+        <p> <i class="iconsax" icon-name="document-text-2" style="font-size: 15px"></i> Bulk sentence Submission</p>
     </div>
     <div class="write-content-P2">
-        <p>Add <img src="img/message-edit.png" alt=""> a public domain sentence</p>
+        <p>Add <i class="iconsax" icon-name="message-edit" style="font-size: 15px"></i> a public domain sentence</p>
         <p><i>Sentence contributed here will be added to a publicly available cc- 0 licensed dataset</i></p>
     </div>
 </section>
@@ -25,18 +25,18 @@
 <section class="write-section-content">
     <div class="write-content-main">
         <div class="section2-profile-content-form">
-            <form action="">
-                <label for="">Sentence</label> <br>
-                <input type="text"> <br>
-                <label for="">Sentence domain</label><br>
-                <select name="" id="">
-                    <option value="">Agriculture And Food</option>
-                    <option value="">Transport</option>
-                    <option value="">Finances</option>
-                    <option value="">General</option>
+            <form id="sentenceForm">
+                <label for="sentence">Sentence</label> <br>
+                <input type="text" id="sentence" required> <br>
+                <label for="domain">Sentence domain</label><br>
+                <select id="domain" required>
+                    <option value="Agriculture And Food">Agriculture And Food</option>
+                    <option value="Transport">Transport</option>
+                    <option value="Finances">Finances</option>
+                    <option value="General">General</option>
                 </select> <br>
-                <label for=""> Citation</label><br>
-                <input type="text"><br>
+                <label for="citation">Citation</label><br>
+                <input type="text" id="citation" required><br>
 
                 <p style="display: flex; justify-content: space-between">
                     <span class="section5-about-content-span">single sentence Submission</span>
@@ -70,19 +70,29 @@
     </div>
 
     <div class="write-content-side-checkbox">
-        <p><input type="checkbox">i can confirm that the sentence is a public domain and <br> i have permission to upload it </p>
+        <p>
+            <input type="checkbox" id="confirm" required>
+            I confirm that the sentence is in the public domain and I have permission to upload it.
+        </p>
     </div>
-    <br><br>
+    <br><br> <br> <br>
     <div class="speak-content-ul">
-        <div>
-            <p><img src="img/message-question.png" alt=""> Guidelines</p>
-            <p><img src="img/flag.png" alt="">Contact us</p>
+
+        <div class="section-speak-guidelines">
+            <p><i class="iconsax" icon-name="question-message" style="font-size: 15px;"></i> Guidelines</p>
+            <p><i class="iconsax" icon-name="flag-1" style="font-size: 15px;"></i> Contact us</p>
+                    <p><i class="iconsax" icon-name="keyboard-2" style="font-size: 15px;"></i> Shortcut</p>
         </div>
-        <div>
-            <p>Submit</p>
+        <div class="section-speak-skip">
+            <p id="submitBtn" onclick="submitSentence()">Submit</p>
         </div>
+
     </div>
+    <p id="successMessage" style="display: none; color: green; font-weight: bold;">Successfully Uploaded!</p>
+    </div>
+
 </section>
+
 
 
 
@@ -104,3 +114,61 @@
         }
     }
 </script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let submitBtn = document.getElementById("submitBtn");
+        let sentenceInput = document.getElementById("sentence");
+        let successMessage = document.getElementById("successMessage");
+
+        // Change submit button background when typing
+        sentenceInput.addEventListener("input", function () {
+            if (sentenceInput.value.trim().length > 0) {
+                submitBtn.style.backgroundColor = "#00013A";
+                submitBtn.style.color = "white";
+            } else {
+                submitBtn.style.backgroundColor = ""; // Reset
+                submitBtn.style.color = "";
+            }
+        });
+
+        function submitSentence() {
+            let sentence = sentenceInput.value.trim();
+            let domain = document.getElementById("domain").value;
+            let citation = document.getElementById("citation").value.trim();
+            let confirm = document.getElementById("confirm").checked;
+
+            if (!sentence || !domain || !citation || !confirm) {
+                alert("Please fill all fields and confirm the checkbox.");
+                return;
+            }
+
+            // Simulate sending data (replace with actual database call)
+            fetch("transcriptions", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({ sentence, domain, citation }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        successMessage.textContent = "Successfully uploaded!";
+                        successMessage.style.color = "green";
+                        sentenceInput.value = "";
+                        submitBtn.style.backgroundColor = ""; // Reset color after submit
+                        submitBtn.style.color = "";
+                    } else {
+                        successMessage.textContent = "Upload failed. Try again.";
+                        successMessage.style.color = "red";
+                    }
+                })
+                .catch(error => console.error("Error:", error));
+        }
+
+        // Attach event listener to submit button
+        submitBtn.addEventListener("click", submitSentence);
+    });
+</script>
+

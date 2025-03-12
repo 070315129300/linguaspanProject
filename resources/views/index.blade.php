@@ -7,16 +7,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Lingua Span</title>
     <link rel="stylesheet" href="css/styles.css">
-{{--        <link rel="stylesheet" href="https://unpkg.com/boxicons@latest/css/boxicons.min.css">--}}
-{{--        <link rel="preconnect" href="https://fonts.googleapis.com">--}}
-{{--        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>--}}
-{{--        <link rel="stylesheet" href="https://fonts.googlepis.com/css2?family=Permanent+M--}}
-{{--        arker&family=Poppins:wght@300;400;600;700;800;900display=swap">--}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-{{--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">--}}
     <link href="https://iconsax.gitlab.io/i/icons.css" rel="stylesheet">
-
-
 </head>
 <body>
 <section class="backgroundcolor">
@@ -57,7 +49,7 @@
             <li id="ip-profile">
                 <div>
                     <a href="" style="color: white">
-                        <img src="img/ai-robot1.png" alt="">
+
                         <p> IP </p>
                         <p><i class="iconsax" icon-name="chevron-down" style="font-size: 20px;"></i></p>
                     </a>
@@ -83,7 +75,7 @@
             <li id="ip-profile">
                 <div>
                 <a href="" style="color: white">
-                    <img src="img/ai-robot1.png" alt="">
+
                     <p> IP </p>
                    <p><i class="iconsax" icon-name="chevron-down" style="font-size: 20px;"></i></p>
                 </a>
@@ -145,40 +137,11 @@
     </div>
 </header>
 
-       {{-- <section class="section1">
-           <h1> We help <span>teach machines</span> how<br>You <img src="img/image1.png" alt=""> people speak</h1>
-           <br>
-
-           <img src="img/Subtract.png" alt=""  id="section1subtractimg">
-           <div>
-               <a href="" class="" style="margin-top: -600px;margin-left:180px;"> <img src="img/component2.png" alt="" width="70px">
-                   <p> "Write"
-                       <br> Select write to start <br> contributing to our <br> open data collection
-                   </p>
-               </a>
-               <a href="" style="margin-top: -750px; margin-left:70px;"><img src="img/component4.png" alt="" width="70px">
-                   <p> "Speak" <br> Select speak to start<br> contributing to our<br> open data collection
-                   </p>
-               </a>
-               <a href="" style="margin-top: -750px; margin-right:70px;"><img src="img/component3.png" alt="" width="70px">
-                   <p> "Listen" <br> Select listen to start<br> contributing to our <br>open data collection
-                   </p>
-               </a>
-               <a href="" style="margin-top: -600px;margin-right:180px;"><img src="img/component1.png" alt="" width="70px">
-                   <p> "Review" <br> Select review to start<br> contributing to our<br> open data collection
-                   </p>
-               </a>
-           </div>
-
-           <div class="section1img">
-               <img src="img/image2.png" alt=""  id="section1subtractimg1">
-           </div>
-       </section> --}}
 
     <br>
        <section class="sectionA">
          <div class="section-title"> We help teach <span class="title-family"> machines</span> how</div>
-         <div class="section-image">You <img src="img/image1.png" class="africa" alt=""> people speak</div>
+         <div class="section-image">African <img src="img/image1.png" class="africa" alt=""> people speak</div>
            <br><br><br>
 
            <div class="banner-items">
@@ -194,7 +157,7 @@
                      <div class="card-line"></div>
                     <div class="tab-content">
                         <h1>Write</h1>
-                        <div class="tab-body">
+                        <div class="tab-body">up
                             Select write to start contribution to our Open collection data
                         </div>
                     </div>
@@ -267,6 +230,7 @@
                    <p>over 1 Million<br> Voices</p>
                </div>
 
+
                 <div class="section2p">
                     <table>
                         <tr>
@@ -294,24 +258,25 @@
                    <p>The Voice is an Initiative to help teach machines how real people speak. <br></p>
 
                    <div class="section3img">
-                       <div class="componentimg">
-                           <br>
-                           <a href="{{url('contribute')}}">
-                               <img src="img/component1.png" alt="Component 1">
-                           </a> <br>
-                           <a href="{{url('listen')}}">
-                               <img src="img/component3.png" alt="Component 1">
-                           </a> <br>
-                           <a href="{{url('write')}}">
-                               <img src="img/component2.png" alt="Component 1">
-                           </a> <br>
-                           <a href="{{url('review')}}">
-                               <img src="img/component.png" alt="Component 1">
-                           </a><br>
-                       </div>
-                       <div class="section3backgroundimg">
-                           <img src="img/ai-robot.png" alt="">
-                       </div>
+{{--                       <div class="componentimg">--}}
+{{--                           <br>--}}
+{{--                           <a href="{{url('contribute')}}">--}}
+{{--                               <img src="img/component1.png" alt="Component 1">--}}
+{{--                           </a> <br>--}}
+{{--                           <a href="{{url('listen')}}">--}}
+{{--                               <img src="img/component3.png" alt="Component 1">--}}
+{{--                           </a> <br>--}}
+{{--                           <a href="{{url('write')}}">--}}
+{{--                               <img src="img/component2.png" alt="Component 1">--}}
+{{--                           </a> <br>--}}
+{{--                           <a href="{{url('review')}}">--}}
+{{--                               <img src="img/component.png" alt="Component 1">--}}
+{{--                           </a><br>--}}
+{{--                       </div>--}}
+{{--                       <div class="section3backgroundimg">--}}
+{{--                           <img src="img/ai-robot.png" alt="">--}}
+{{--                       </div>--}}
+                       <img src="img/Caleb.jpg" alt="" height="400px" width="400px">
                    </div>
                </div>
                 <div class="section3div2">
@@ -331,17 +296,20 @@
 
         <section class="section4">
             <div class="section4content">
-                <div class="section4content1" >
-                   <div class="section4div">
-                       <p> Voices Online Now <br> 20</p>
-                       <select name="" id="">
-                           <option value="">All languages</option>
-                       </select>
-                   </div>
-                    <div class="chart-container">
-                        <canvas id="barChart" width="370" height="200"></canvas>
+                <div class="section4content1">
+                    <div class="section4div">
+                        <p>Voices Online Now <br> <span id="onlineCount">20</span></p>
+                        <select id="languageSelect">
+                            <option value="">All languages</option>
+                            @foreach ($languages as $language)
+                                <option value="{{ $language }}">{{ ucfirst($language) }}</option>
+                            @endforeach
+                        </select>
                     </div>
-
+                    <!-- HOURLY BAR CHART (For Today) -->
+                    <div class="chart-container">
+                        <canvas id="hourlyChart"></canvas>
+                    </div>
                 </div>
                 <div class="section4content1">
                     <div class="section4div">
@@ -355,7 +323,8 @@
                         </select>
                     </div>
                     <div class="chart-container">
-                        <canvas id="lineGraph" width="370" height="200"></canvas>
+
+                        <canvas id="transcriptionChart"></canvas>
                     </div>
                 </div>
             </div>
@@ -385,67 +354,107 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="script.js"></script>
 <script>
-    // Bar Chart
-    const barCtx = document.getElementById('barChart').getContext('2d');
-    const barChart = new Chart(barCtx, {
-        type: 'bar',
-        data: {
-            labels: ['17:00', '18:00', '19:00', '20:00', '21:00', '22:00','23:00','00:00', '01:00','02:00','03:00'],
-            datasets: [{
-                label: 'Sales',
-                data: [0, 20, 40, 60],
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.6)',
-                    'rgba(54, 162, 235, 0.6)',
-                    'rgba(75, 192, 192, 0.6)',
-                    'rgba(153, 102, 255, 0.6)',
-                    'rgba(255, 159, 64, 0.6)',
-                    'rgba(255, 206, 86, 0.6)'
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)',
-                    'rgba(255, 206, 86, 1)'
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
+    // Bar Chart start her
+    document.addEventListener("DOMContentLoaded", function () {
+        const ctx = document.getElementById("hourlyChart").getContext("2d");
+
+        // Get data directly from Laravel (No API call)
+        const intervals = @json($intervals);
+        const dailyTotalHoursData = @json($dailyTotalHoursData);
+
+        // Ensure that even if no data exists, we show the X and Y axes
+        const defaultData = dailyTotalHoursData.length ? dailyTotalHoursData : new Array(intervals.length).fill(0);
+
+        // Render Chart
+        new Chart(ctx, {
+            type: "bar",
+            data: {
+                labels: intervals,
+                datasets: [{
+                    label: "Hours Transcribed (Today)",
+                    data: defaultData,
+                    backgroundColor: "rgba(255, 99, 132, 0.6)",
+                    borderColor: "rgba(255, 99, 132, 1)",
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        suggestedMax: 5,
+                        ticks: {
+                            font: { size: 9 } // ✅ Set font size to 8px
+                        }
+                    },
+                    x: {
+                        grid: { display: true },
+                        ticks: {
+                            font: { size: 9 }
+                        }
+                    }
                 }
             }
-        }
+        });
+
+        // Language filter (refresh page with selected language)
+        document.getElementById("languageSelect").addEventListener("change", function () {
+            window.location.href = "?stats=" + this.value;
+        });
     });
 
-    // Line Graph
-    const lineCtx = document.getElementById('lineGraph').getContext('2d');
-    const lineGraph = new Chart(lineCtx, {
-        type: 'line',
-        data: {
-            labels: ['1yr', '9mo', '6mo', '3mo', 'today'],
-            datasets: [{
-                label: 'Revenue',
-                data: [15, 25, 20, 35, 45, 60],
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 2,
-                fill: true,
-                tension: 0.3
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
+
+    // bar chart end here
+    // line graph start here
+    document.addEventListener("DOMContentLoaded", function () {
+        const months = @json($months);
+        const totalHours = @json($totalHoursData);
+        const approvedHours = @json($approvedHoursData);
+
+        const ctx = document.getElementById('transcriptionChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: months,
+                datasets: [
+                    {
+                        label: 'Total Hours',
+                        data: totalHours,
+                        borderColor: 'blue',
+                        backgroundColor: 'rgba(0, 0, 255, 0.1)',
+                        borderWidth: 2
+                    },
+                    {
+                        label: 'Approved Hours',
+                        data: approvedHours,
+                        borderColor: 'red',
+                        backgroundColor: 'rgba(255, 0, 0, 0.1)',
+                        borderWidth: 2
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            font: { size: 9 } // ✅ Reduce Y-axis font size to 6px
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            font: { size: 9 } // ✅ Reduce X-axis font size to 6px
+                        }
+                    }
                 }
             }
-        }
+        });
     });
+
+    // line graph end her
 
 </script>
 <script>
@@ -461,6 +470,48 @@
         ? 'fas fa-bars'
             : 'fas fa-xmark'
     }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        let contributeMenu = document.querySelector(".navlist li"); // The "CONTRIBUTE" li
+        let dropdown = contributeMenu.querySelector(".dropdown"); // The dropdown inside
+
+        let hideTimeout; // Timeout variable to delay hiding
+
+        // Function to show the dropdown
+        function showDropdown() {
+            clearTimeout(hideTimeout); // Clear any hide delay
+            contributeMenu.classList.add("show");
+        }
+
+        // Function to hide the dropdown with delay
+        function hideDropdown() {
+            hideTimeout = setTimeout(() => {
+                contributeMenu.classList.remove("show");
+            }, 30000); // Delay of 300ms
+        }
+
+        // Show dropdown on hover
+        contributeMenu.addEventListener("mouseenter", showDropdown);
+        dropdown.addEventListener("mouseenter", showDropdown);
+
+        // Hide dropdown when mouse leaves (with delay)
+        contributeMenu.addEventListener("mouseleave", hideDropdown);
+        dropdown.addEventListener("mouseleave", hideDropdown);
+
+        // Toggle dropdown on click
+        contributeMenu.addEventListener("click", function (event) {
+            event.stopPropagation();
+            showDropdown();
+        });
+
+        // Hide when clicking outside
+        document.addEventListener("click", function (event) {
+            if (!contributeMenu.contains(event.target)) {
+                contributeMenu.classList.remove("show");
+            }
+        });
+    });
+
 </script>
 </body>
 </html>

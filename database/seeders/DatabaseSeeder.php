@@ -23,7 +23,8 @@ class DatabaseSeeder extends Seeder
         $this->call(ListenSeeder::class);
         $this->call(ReviewSeeder::class);
         $this->call(WriteSeeder::class);
-        $this->call(TransciptionsSeeder::class);
+        $this->call(TranscriptionsSeeder::class);
+        $this->call(LanguagesSeeder::class);
 
     }
 }

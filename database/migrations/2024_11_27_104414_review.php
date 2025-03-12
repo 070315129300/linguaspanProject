@@ -13,14 +13,14 @@ return new class extends Migration
     {
         Schema::create('reviews', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id');
-            $table->integer('transcription_id');
-            $table->string('language', 50);
-            $table->string('file_name');
-            $table->string('file_path');
-            $table->string('sentence_domain');
+            $table->integer('user_id')->nullable();
+            $table->integer('transcription_id')->nullable();
+            $table->string('language', 50)->nullable();
+            $table->string('file_name')->nullable();
+            $table->string('file_path')->nullable();
+            $table->string('sentence_domain')->nullable();
             $table->text('sentence')->nullable();
-            $table->decimal('review_score', 8, 2)->unsigned();
+            $table->decimal('review_score', 8, 2)->unsigned()->nullable();
             $table->boolean('flag')->default(false);
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->timestamps();

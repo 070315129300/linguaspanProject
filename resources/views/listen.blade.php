@@ -9,25 +9,41 @@
             <td class="hoverable "><a href="{{url('review')}}"><i class="iconsax" icon-name="first-character" style="font-size: 15px"></i>  Review</a> </td>
         </tr>
     </table>
+    <div>
+        <select id="languageSelect">
+            <option value="">Select Language</option>
+            <option value="English">English</option>
+            <option value="Swahili">Swahili</option>
+            <option value="Yoruba">Yoruba</option>
+            <option value="French">French</option>
+            <option value="Igbo">Igbo</option>
+            <option value="Hausa">Hausa</option>
+        </select>
+    </div>
 </section>
 
 <section class="listen write-section-content" id="listen-section">
         <div class="speak-content">
             <div class="speak-content-word">
-                <p class="speak-content-words-p">Press <img src="img/sound4.png" width="10px" alt=""> to listen & choose Yes/No to confirm if sentence was well read</p>
+                <p class="speak-content-words-p">Press <i class="iconsax" icon-name="sound" style="font-size: 15px"></i> to listen & choose Yes/No to confirm if sentence was well read</p>
                 <p class="speak-content-word-p">The man went home <br>yesterday</p>
             </div>
             <div class="speak-content-number">
-                <p><img src="img/sound4.png" alt=""> <span> 1</span></p>
-                <span>2</span> <br>
-                <span>3</span> <br>
-                <span>4</span>
+                <p class="speak-content-number-listen"><i class="iconsax" icon-name="sound" style="font-size: 15px"></i> <span class="active"> 1</span></p>
+                <div class="number-list">
+                    <span>2</span>
+                    <span>3</span>
+                    <span>4</span>
+                    <span>5</span>
+                </div>
             </div>
         </div>
         <div  class="speak-content-mic1">
 
             <p class="speak-content-mic2"><i class="iconsax" icon-name="tick-circle" style="font-size: 15px;color: green"></i> Yes </p>
-            <img src="img/component5.png" alt="" class="speak-content-mic3" >
+            <button id="listenButton" style="border: none; background: none">
+                <img src="img/component5.png" alt="" width="100px important!" height= "100px important! ">
+            </button>
             <p class="speak-content-mic2"><i class="iconsax" icon-name="x-circle" style="font-size: 15px;color: red"></i> No </p>
         </div>
 
@@ -41,189 +57,222 @@
                     <p><i class="iconsax" icon-name="keyboard-2" style="font-size: 15px;"></i> Shortcut</p>
                 </div>
                 <div class="section-speak-skip">
-{{--                    <p><i class="iconsax" icon-name="media-forward" style="font-size: 15px;"></i> Skip</p>--}}
+                    <p><i class="iconsax" icon-name="media-forward" style="font-size: 15px;"></i> Skip</p>
 
                     <p>Submit</p>
                 </div>
             </div>
         </div>
 </section>
-{{--<section class="speak section-content" id="speak-section">--}}
-{{--    <div class="speak-content">--}}
-{{--        <div class="speak-content-word">--}}
-{{--            <p>Press <i class="fas fa-microphone"></i> then read the sentence aloud</p><br>--}}
-{{--            <p class="speak-content-word-p">The man went home <br>yesterday</p>--}}
-{{--        </div>--}}
-{{--        <div class="speak-content-number">--}}
-{{--            <p>Start Recording <span> 1</span></p><br>--}}
-{{--            <span>2</span> <br><br>--}}
-{{--            <span>3</span> <br><br>--}}
-{{--            <span>4</span> <br>--}}
-
-{{--        </div>--}}
-{{--    </div>--}}
-{{--    <br>--}}
-{{--    <div class="speak-content-mic"><img src="img/component4.png" alt=""></div>--}}
-{{--    <div class="speak-content-ul">--}}
-{{--        <ul>--}}
-{{--            <li><img src="img/message-question.png" alt=""> Guidelines</li>--}}
-{{--            <li><img src="img/flag.png" alt="">Report</li>--}}
-{{--            <li><img src="img/keyboard-open.png" alt="">Shortcut</li>--}}
-{{--        </ul>--}}
-{{--        <ul>--}}
-{{--            <li><img src="img/forward.png" alt="">Skip</li>--}}
-{{--            <li>Submit</li>--}}
-{{--        </ul>--}}
-{{--    </div>--}}
-{{--</section>--}}
 
 
-
-{{--<section class="write section-content" id="write-section" style="display: none;">--}}
-
-{{--    <div class="write-content-P">--}}
-{{--        <p>Single sentence</p>--}}
-{{--        <p>Bulk sentence Submission</p>--}}
-{{--    </div>--}}
-{{--    <div class="write-content-P2">--}}
-{{--        <p>Add <i class="fa-regular fa-pen-to-square"></i> a public domain sentence</p>--}}
-{{--        <p>Sentence contributed here will be added to a publicly available cc- 0 licensed dataset</p>--}}
-{{--    </div>--}}
-
-{{--    <div class="write-content-main">--}}
-{{--        <div class="write-content-main-form">--}}
-{{--            <form action="">--}}
-{{--                <label for="">Sentence</label> <br>--}}
-{{--                <input type="text"> <br>--}}
-{{--                <label for="">Sentence domain</label>--}}
-{{--                <input type="text"> <br>--}}
-{{--                <label for=""> Citation</label>--}}
-{{--                <input type="text">--}}
-{{--                <p>single sentence Submission</p>--}}
-
-{{--            </form>--}}
-{{--        </div>--}}
-{{--        <div class="write-content-main-side">--}}
-{{--            <p>What sentence can i add? </p>--}}
-{{--            <ul>--}}
-{{--                <li>fewer than 15 words per sentence</li>--}}
-{{--                <li>Use correct grammar</li>--}}
-{{--                <li>Use correct spelling and punctuation</li>--}}
-{{--                <li>No numbers and special characters</li>--}}
-{{--                <li>No foreign letters</li>--}}
-{{--                <li>Include appropriate citation</li>--}}
-{{--                <li>Ideally natural and conversational (it <br>--}}
-{{--                    should be easy to read the sentence</li>--}}
-{{--            </ul>--}}
-{{--        </div>--}}
-{{--    </div>--}}
-
-{{--    <div class="write-content-side-checkbox">--}}
-{{--        <p>i can confirm that the sentence is a public domain and <br> i have permission to upload it </p>--}}
-{{--    </div>--}}
-
-{{--    <div class="write-content-main-ul">--}}
-{{--        <ul>--}}
-{{--            <li> Guidelines</li>--}}
-{{--            <li>Contact us</li>--}}
-{{--        </ul>--}}
-{{--        <p>submit</p>--}}
-{{--    </div>--}}
-
-
-{{--</section>--}}
-
-{{--<section class="review section-content" id="review-section" style="display: none;">--}}
-
-{{--    <div>--}}
-{{--        <div>--}}
-{{--            <p>Press <i class="fa-solid fa-book"></i> then read the sentence aloud</p>--}}
-{{--            <p>The man went home yesterday</p>--}}
-{{--            <div>--}}
-{{--                <ul>--}}
-{{--                    <li>yes</li>--}}
-{{--                    <li>No Skip</li>--}}
-{{--                    <li>No</li>--}}
-{{--                </ul>--}}
-
-{{--            </div>--}}
-{{--        </div>--}}
-{{--        <div>--}}
-{{--            <p>Does the sentence meet the guidelines? </p>--}}
-{{--            <ul>--}}
-{{--                <li>fewer than 15 words per sentence</li>--}}
-{{--                <li>Use correct grammar</li>--}}
-{{--                <li>Use correct spelling and punctuation</li>--}}
-{{--                <li>No numbers and special characters</li>--}}
-{{--                <li>No foreign letters</li>--}}
-{{--                <li>Include appropriate citation</li>--}}
-{{--                <li>Ideally natural and conversational (it <br>--}}
-{{--                    should be easy to read the sentence</li>--}}
-
-{{--            </ul>--}}
-{{--        </div>--}}
-{{--    </div>--}}
-
-{{--    <div>--}}
-{{--        <div>--}}
-{{--            <ul>--}}
-{{--                <li> Guidelines</li>--}}
-{{--                <li>Report</li>--}}
-{{--                <li>Shortcut</li>--}}
-{{--            </ul>--}}
-
-{{--        </div>--}}
-{{--    </div>--}}
-{{--</section>--}}
 
 @include('footer')
+<script>
 
-{{--<script>--}}
-{{--    // JavaScript to handle tab switching--}}
-{{--    document.getElementById("speak-tab").addEventListener("click", function() {--}}
-{{--        showSection("speak-section");--}}
-{{--    });--}}
+    document.addEventListener("DOMContentLoaded", function () {
+        let currentIndex = 0;
+        const totalSentences = 5;
+        let responses = {};
+        let audioFiles = @json($fileList);
+        let currentBatch = audioFiles.slice(0, totalSentences);
+        let batchStartIndex = 0;
 
-{{--    document.getElementById("listen-tab").addEventListener("click", function() {--}}
-{{--        showSection("listen-section");--}}
-{{--    });--}}
+        const listenButton = document.getElementById("listenButton");
+        const listenImage = listenButton.querySelector("img");
+        const yesButton = document.querySelector(".speak-content-mic2 i[icon-name='tick-circle']").closest("p");
+        const noButton = document.querySelector(".speak-content-mic2 i[icon-name='x-circle']").closest("p");
+        const numberList = document.querySelector(".number-list").querySelectorAll("span");
+        const activeNumberContainer = document.querySelector(".speak-content-number-listen");
+        const activeNumber = activeNumberContainer.querySelector("span");
 
-{{--    document.getElementById("write-tab").addEventListener("click", function() {--}}
-{{--        showSection("write-section");--}}
-{{--    });--}}
+        listenButton.addEventListener("click", function () {
+            if (currentIndex < totalSentences) {
+                playAudio(currentIndex);
+            }
+        });
 
-{{--    document.getElementById("review-tab").addEventListener("click", function() {--}}
-{{--        showSection("review-section");--}}
-{{--    });--}}
-{{--    const tabs = document.querySelectorAll(".sectionnavbar ul li");--}}
-{{--    tabs.forEach(tab => {--}}
-{{--        tab.addEventListener("click", function () {--}}
-{{--            // Remove 'active' class from all tabs--}}
-{{--            tabs.forEach(t => t.classList.remove("active"));--}}
-{{--            // Add 'active' class to the clicked tab--}}
-{{--            this.classList.add("active");--}}
+        function playAudio(index) {
+            listenImage.src = "img/component4.png";
+            let audio = new Audio(currentBatch[index].url);
+            audio.play();
 
-{{--            // Determine the section to show based on the clicked tab's ID--}}
-{{--            if (this.id === "speak-tab") {--}}
-{{--                showSection("speak-section");--}}
-{{--            } else if (this.id === "listen-tab") {--}}
-{{--                showSection("listen-section");--}}
-{{--            } else if (this.id === "write-tab") {--}}
-{{--                showSection("write-section");--}}
-{{--            } else if (this.id === "review-tab") {--}}
-{{--                showSection("review-section");--}}
-{{--            }--}}
-{{--        });--}}
-{{--    });--}}
+            let waveContainer = document.createElement("div");
+            waveContainer.id = "waveContainer";
+            waveContainer.innerHTML = '<img src="img/audio_wave.png" style="width: 100px;">';
+            listenButton.parentNode.insertBefore(waveContainer, listenButton.nextSibling);
 
-{{--    function showSection(sectionId) {--}}
-{{--        // Hide all sections--}}
-{{--        const sections = document.querySelectorAll(".section-content");--}}
-{{--        sections.forEach(section => {--}}
-{{--            section.style.display = "none";--}}
-{{--        });--}}
+            audio.onended = function () {
+                waveContainer.remove();
+                listenImage.src = "img/component5.png";
+            };
+        }
 
-{{--        // Show the selected section--}}
-{{--        document.getElementById(sectionId).style.display = "block";--}}
-{{--    }--}}
-{{--</script>--}}
+        yesButton.addEventListener("click", function () {
+            if (currentIndex < totalSentences) {
+                saveResponse(currentIndex, "yes");
+                updateUI();
+            }
+        });
+
+        noButton.addEventListener("click", function () {
+            if (currentIndex < totalSentences) {
+                saveResponse(currentIndex, "no");
+                updateUI();
+            }
+        });
+
+        function saveResponse(index, response) {
+            let iconHTML = `<i class='iconsax' icon-name='${response === "yes" ? "tick-circle" : "x-circle"}'
+            style='font-size: 15px; color: ${response === "yes" ? "green" : "red"}'></i>`;
+
+            responses[currentBatch[index].name] = response;
+
+            if (index === 0) {
+                // First response goes in the <p> tag
+                activeNumber.innerHTML = iconHTML;
+            } else {
+                // Subsequent responses go inside the respective <span>
+                numberList[index - 1].innerHTML = iconHTML;
+            }
+        }
+
+        function updateUI() {
+            currentIndex++;
+
+            if (currentIndex < totalSentences) {
+                // Move the next number to the active <p> tag
+                activeNumber.innerHTML = numberList[currentIndex - 1].innerHTML;
+                numberList[currentIndex - 1].style.display = "none";
+            } else {
+                sendResponsesToBackend();
+            }
+        }
+
+        function sendResponsesToBackend() {
+            fetch("/save-responses", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ responses })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Responses saved successfully:", data);
+                    loadNextBatch();
+                })
+                .catch(error => console.error("Error saving responses:", error));
+        }
+
+        function loadNextBatch() {
+            batchStartIndex += totalSentences;
+            currentBatch = audioFiles.slice(batchStartIndex, batchStartIndex + totalSentences);
+            currentIndex = 0;
+            responses = {};
+
+            // Reset number list UI
+            numberList.forEach((span, index) => {
+                span.innerHTML = index + 2;
+                span.style.display = "inline-block"; // Show again
+            });
+
+            activeNumber.innerHTML = "1"; // Reset active number
+            activeNumber.style.display = "inline-block"; // Make sure it's visible
+
+            if (currentBatch.length === 0) {
+                console.log("No more audio files to process.");
+            }
+        }
+    });
+
+    {{--document.addEventListener("DOMContentLoaded", function () {--}}
+    {{--    let currentIndex = 0;--}}
+    {{--    const totalSentences = 5;--}}
+    {{--    let responses = {};--}}
+    {{--    let audioFiles = @json($fileList);--}}
+    {{--    let currentBatch = audioFiles.slice(0, totalSentences); // Get the first 5--}}
+    {{--    let batchStartIndex = 0;--}}
+
+    {{--    const listenButton = document.getElementById("listenButton");--}}
+    {{--    const listenImage = listenButton.querySelector("img");--}}
+    {{--    const yesButton = document.querySelector(".speak-content-mic2 i[icon-name='tick-circle']").closest("p");--}}
+    {{--    const noButton = document.querySelector(".speak-content-mic2 i[icon-name='x-circle']").closest("p");--}}
+    {{--    const numberList = document.querySelector(".speak-content-number-listen span");--}}
+    {{--    let speakContent = document.querySelector(".speak-content");--}}
+
+    {{--    listenButton.addEventListener("click", function () {--}}
+    {{--        if (currentIndex < totalSentences) {--}}
+    {{--            playAudio(currentIndex);--}}
+    {{--        }--}}
+    {{--    });--}}
+
+    {{--    function playAudio(index) {--}}
+    {{--        listenImage.src = "img/component4.png";--}}
+    {{--        let audio = new Audio(currentBatch[index].url);--}}
+    {{--        audio.play();--}}
+
+    {{--        let waveContainer = document.createElement("div");--}}
+    {{--        waveContainer.id = "waveContainer";--}}
+    {{--        waveContainer.innerHTML = '<img src="img/audio_wave.png" style="width: 100px;">';--}}
+    {{--        speakContent.parentNode.insertBefore(waveContainer, speakContent.nextSibling);--}}
+
+    {{--        audio.onended = function () {--}}
+    {{--            waveContainer.remove();--}}
+    {{--            listenImage.src = "img/component5.png";--}}
+    {{--        };--}}
+    {{--    }--}}
+
+    {{--    yesButton.addEventListener("click", function () {--}}
+    {{--        if (currentIndex < totalSentences) {--}}
+    {{--            saveResponse(currentIndex, "yes");--}}
+    {{--            updateUI();--}}
+    {{--        }--}}
+    {{--    });--}}
+
+    {{--    noButton.addEventListener("click", function () {--}}
+    {{--        if (currentIndex < totalSentences) {--}}
+    {{--            saveResponse(currentIndex, "no");--}}
+    {{--            updateUI();--}}
+    {{--        }--}}
+    {{--    });--}}
+
+    {{--    function saveResponse(index, response) {--}}
+    {{--        responses[currentBatch[index].name] = response;--}}
+    {{--        numberList.innerHTML += `<i class='iconsax' icon-name='${response === "yes" ? "tick-circle" : "x-circle"}' style='font-size: 15px; color: ${response === "yes" ? "green" : "red"}'></i>`;--}}
+    {{--    }--}}
+
+    {{--    function updateUI() {--}}
+    {{--        currentIndex++;--}}
+    {{--        if (currentIndex >= totalSentences) {--}}
+    {{--            sendResponsesToBackend();--}}
+    {{--        }--}}
+    {{--    }--}}
+
+    {{--    function sendResponsesToBackend() {--}}
+    {{--        fetch("/save-responses", {--}}
+    {{--            method: "POST",--}}
+    {{--            headers: { "Content-Type": "application/json" },--}}
+    {{--            body: JSON.stringify({ responses })--}}
+    {{--        })--}}
+    {{--            .then(response => response.json())--}}
+    {{--            .then(data => {--}}
+    {{--                console.log("Responses saved successfully:", data);--}}
+    {{--                loadNextBatch();--}}
+    {{--            })--}}
+    {{--            .catch(error => console.error("Error saving responses:", error));--}}
+    {{--    }--}}
+
+    {{--    function loadNextBatch() {--}}
+    {{--        batchStartIndex += totalSentences;--}}
+    {{--        currentBatch = audioFiles.slice(batchStartIndex, batchStartIndex + totalSentences);--}}
+    {{--        currentIndex = 0;--}}
+    {{--        responses = {};--}}
+    {{--        numberList.innerHTML = ""; // Reset UI indicators--}}
+
+    {{--        if (currentBatch.length === 0) {--}}
+    {{--            console.log("No more audio files to process.");--}}
+    {{--        }--}}
+    {{--    }--}}
+    {{--});--}}
+
+</script>
+

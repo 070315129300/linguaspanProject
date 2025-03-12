@@ -6,6 +6,7 @@
     <title>Admin Dashboard</title>
     <link rel="stylesheet" href="css/admin_styles.css">
     <link href="https://iconsax.gitlab.io/i/icons.css" rel="stylesheet">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 <body>
 <div class="dashboard">
@@ -50,18 +51,16 @@
                     <tr>
                         <th>FullName</th>
                         <th>Profession</th>
-                        <th>Preferred Lang</th>
                         <th>Nationality</th>
                         <th>Hours Transcribed</th>
                         <th>Reward points</th>
-                        <th>Actions</th>
+                        <th style="text-align: center">Actions</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr>
                         <td>John Doe</td>
                         <td>02/12/2024</td>
-                        <td>Admin</td>
                         <td>Active</td>
                         <td>Edit | Delete</td>
                         <td>Active</td>
@@ -77,11 +76,16 @@
                         <tr>
                             <td>{{ $user->fullName }}</td>
                             <td>{{ $user->profession }}</td>
-                            <td>{{ ucfirst($user->language) }}</td>
                             <td>{{$user->nationality}}</td>
                             <td>{{ $user->hours }}</td>
                             <td>{{ ($user->rewardPoint) }}</td>
-                            <td onclick="ActionModal(event)" class="action-buttons"> ***</td>
+                            <td onclick="ActionModal(event)"
+                                class="action-buttons"
+                                data-user-id="{{ $user->id }}"
+                                data-full-name="{{ $user->fullName }}"
+                                data-page="reward"> <!-- Add this -->
+                                <i class="iconsax" icon-name="menu-meatballs"></i>
+                            </td>
 
                         </tr>
                     @empty

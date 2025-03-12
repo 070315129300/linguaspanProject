@@ -47,39 +47,41 @@
         <h3>Dashboard</h3>
         <section>
             <div class="dashboard-card">
-                <div><a href="{{url("permission")}}"  class="href_black">
-                        <span>Total user</span>
-                        <p>15</p>
+                <div>
+                    <a href="" class="href_black">
+                        <span>Total Users</span>
+                        <p>{{ $userCount }}</p> <!-- Dynamically display user count -->
                     </a>
                 </div>
+
                 <div><a href="" class="href_black">
                         <span>Total Language</span>
-                        <p>15</p>
+                        <p>{{$totalLanguage}}</p>
                     </a>
                 </div>
                 <div><a href="" class="href_black">
                         <span>Language Transcribed</span>
-                        <p>15 </p>
+                        <p>{{$uniqueTranscribedLanguages}} </p>
                     </a>
                 </div>
                 <div><a href="" class="href_black">
                         <span>Pending review</span>
-                        <p>15 </p>
+                        <p>{{$pendingReviews}} </p>
                     </a>
                 </div>
                 <div><a href="" class="href_black">
                         <span>Total Transcription</span>
-                        <p>15 </p>
+                        <p>{{$totalTranscriptions}} </p>
                     </a>
                 </div>
                 <div><a href="" class="href_black">
                         <span>Total Recording</span>
-                        <p>15 </p>
+                        <p>{{$totalSpeak}} </p>
                     </a>
                 </div>
                 <div><a href="" class="href_black">
                         <span>Total Submission</span>
-                        <p>15 </p>
+                        <p>{{$totalTranscriptions}}  </p>
                     </a>
                 </div>
             </div>
@@ -89,13 +91,13 @@
             <div class="section4content">
                 <div class="section4content1" >
                     <div class="section4div">
-                        <p> Voices Online Now <br> 20</p>
+                        <p>User activity metric</p>
                         <select name="" id="">
                             <option value="">Filter</option>
                         </select>
                     </div>
                     <div class="chart-container">
-                        <canvas id="barChart" width="370" height="200"></canvas>
+                        <canvas id="transcriptionChart"></canvas>
                     </div>
 
                 </div>
@@ -111,7 +113,7 @@
                         </select>
                     </div>
                     <div class="chart-container">
-                        <canvas id="lineGraph" width="370" height="200"></canvas>
+                        <canvas id="contributionChart" width="370" height="200"></canvas>
                     </div>
                 </div>
             </div>
@@ -124,28 +126,33 @@
                     <div class="section4div">
                         <div>
                             <p>Approval/Rejection/Quality ratings</p>
-                            <p>Approved 45% Rejection 45%</p>
+                            <p>Approved {{$approvedPercentage}}% <span style="color: red">Rejection </span> {{$rejectedPercentage}}%</p>
                         </div>
                         <select name="" id="">
                             <option value="">Filter</option>
                         </select>
                     </div>
                     <div class="chart-container">
-                        <canvas id="barChart" width="370" height="200"></canvas>
+{{--                        <canvas id="transcriptionChartpie"></canvas>--}}
+                        <canvas id="qualityChart" width="370" height="200"></canvas>
+
                     </div>
+
+
 
                 </div>
                 <div class="section4content1">
                     <div class="section4div">
                         <div  class="section4div2">
-                            <p>User activity metric</p>
+
+                            <p>Reviewer Activity</p>
                         </div>
                         <select name="" id="indexselect">
                             <option value="" >Filter</option>
                         </select>
                     </div>
                     <div class="chart-container">
-                        <canvas id="lineGraph" width="370" height="200"></canvas>
+                        <canvas id="reviewerChart"></canvas>
                     </div>
                 </div>
             </div>
@@ -169,7 +176,9 @@
                                         </div>
                                         <div class="table-header-right">
                                             <!-- Submit Button -->
-                                            <button type="submit"><i class="iconsax" icon-name="document-download"></i> download</button>
+                                            <button onclick="exportTableToCSV()">
+                                                <i class="iconsax" icon-name="document-download"></i> Download CSV
+                                            </button>
 
                                         </div>
                                     </div>
@@ -185,41 +194,28 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td>John Doe</td>
-                        <td>02/12/2024</td>
-                        <td>Admin</td>
-                        <td>Active</td>
-                    </tr>
-{{--                    @forelse ($users as $user)--}}
-{{--                        <tr>--}}
-{{--                            <td>{{ ucfirst($user->language) }}</td>--}}
-{{--                            <td>{{$user->nationality}}</td>--}}
-{{--                            <td>{{ $user->hours }}</td>--}}
-{{--                            <td>{{ ($user->user) }}</td>--}}
-{{--                            --}}{{--                            <td>--}}
-{{--                            --}}{{--                                <a href="{{ route('user.edit', $user->id) }}">Edit</a> |--}}
-{{--                            --}}{{--                                <form action="{{ route('user.delete', $user->id) }}" method="POST" style="display:inline;">--}}
-{{--                            --}}{{--                                    @csrf--}}
-{{--                            --}}{{--                                    @method('DELETE')--}}
-{{--                            --}}{{--                                    <button type="submit" onclick="return confirm('Are you sure?')">Delete</button>--}}
-{{--                            --}}{{--                                </form>--}}
-{{--                            --}}{{--                            </td>--}}
-{{--                        </tr>--}}
-{{--                    @empty--}}
-{{--                        <tr>--}}
-{{--                            <td colspan="7">No results found</td>--}}
-{{--                        </tr>--}}
-{{--                    @endforelse--}}
+
+                    @forelse ($transcribedLanguages as $transcribedLanguage)
+                        <tr>
+                            <td>{{ $transcribedLanguage['language'] }}</td>
+                            <td>{{ $transcribedLanguage['user_count'] }}</td>
+                            <td>{{ $transcribedLanguage['total_hours'] }}</td>
+                            <td>{{ $transcribedLanguage['total_transcriptions'] }}</td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="4">No results found</td>
+                        </tr>
+                    @endforelse
 
                     </tbody>
-                    <tfoot>
-                    <tr>
-                        <td colspan="4">
-{{--                            {{ $users->appends(request()->query())->links() }}--}}
-                        </td>
-                    </tr>
-                    </tfoot>
+{{--                    <tfoot>--}}
+{{--                    <tr>--}}
+{{--                        <td colspan="4">--}}
+{{--                            {{ $languages->appends(request()->query())->links() }}--}}
+{{--                        </td>--}}
+{{--                    </tr>--}}
+{{--                    </tfoot>--}}
                 </table>
             </div>
             <!-- Transcribers Table -->
@@ -230,5 +226,126 @@
 
 </div>
 </body>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let ctx = document.getElementById('transcriptionChart').getContext('2d');
+        let transcriptionChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: @json($months->pluck('label')), // ["Jan", "Feb", "Mar", ...]
+                datasets: [{
+                    label: 'Monthly Transcriptions',
+                    data: @json($months->pluck('total')), // [10, 50, 20, 80, ...]
+                    borderColor: 'red',
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.3, // Smooth curve
+                    pointRadius: 5,
+                    pointBackgroundColor: 'blue',
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+    });
+
+
+    // pie chart
+
+        var ctx = document.getElementById('qualityChart').getContext('2d');
+        var qualityChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+        labels: ['Bad', 'Fair', 'Good', 'Excellent'],
+        datasets: [{
+        data: [{{ $badPercentage }}, {{ $fairPercentage }}, {{ $goodPercentage }}, {{ $excellentPercentage }}],
+        backgroundColor: ['#FF5733', '#FFC300', '#36A2EB', '#4CAF50']
+    }]
+    }
+    });
+
+    var ctx = document.getElementById('reviewerChart').getContext('2d');
+    var reviewerChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Approved', 'Rejected', 'Pending'],
+            datasets: [{
+                data: [{{ $approvedPercentage }}, {{ $rejectedPercentage }}, {{ $pendingPercentage }}],
+                backgroundColor: ['#4CAF50', '#FF5733', '#36A2EB'],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'left'
+                }
+            }
+        }
+    });
+
+    {{--const ctx = document.getElementById("contributionChart").getContext("2d");--}}
+
+    {{--const languageData = {!! json_encode($languageApprovalData) !!}; // Pass data from PHP--}}
+
+    {{--const labels = languageData.map(item => item.language);--}}
+    {{--const approvedData = languageData.map(item => item.approved_percentage);--}}
+    {{--const pendingRejectedData = languageData.map(item => item.pending_rejected_percentage);--}}
+
+    {{--const chartData = {--}}
+    {{--    labels: labels,--}}
+    {{--    datasets: [--}}
+    {{--        {--}}
+    {{--            label: "Approved (%)",--}}
+    {{--            backgroundColor: "rgba(54, 162, 235, 0.6)", // Blue--}}
+    {{--            borderColor: "rgba(54, 162, 235, 1)",--}}
+    {{--            borderWidth: 1,--}}
+    {{--            data: approvedData--}}
+    {{--        },--}}
+    {{--        {--}}
+    {{--            label: "Pending/Rejected (%)",--}}
+    {{--            backgroundColor: "rgba(255, 99, 132, 0.6)", // Red--}}
+    {{--            borderColor: "rgba(255, 99, 132, 1)",--}}
+    {{--            borderWidth: 1,--}}
+    {{--            data: pendingRejectedData--}}
+    {{--        }--}}
+    {{--    ]--}}
+    {{--};--}}
+
+    {{--const contributionChart = new Chart(ctx, {--}}
+    {{--    type: "bar",--}}
+    {{--    data: chartData,--}}
+    {{--    options: {--}}
+    {{--        responsive: true,--}}
+    {{--        maintainAspectRatio: false,--}}
+    {{--        scales: {--}}
+    {{--            y: {--}}
+    {{--                beginAtZero: true,--}}
+    {{--                max: 100,--}}
+    {{--                title: {--}}
+    {{--                    display: true,--}}
+    {{--                    text: "Percentage (%)"--}}
+    {{--                }--}}
+    {{--            },--}}
+    {{--            x: {--}}
+    {{--                title: {--}}
+    {{--                    display: true,--}}
+    {{--                    text: "Languages"--}}
+    {{--                }--}}
+    {{--            }--}}
+    {{--        }--}}
+    {{--    }--}}
+    {{--});--}}
+
+</script>
+
 </html>
 

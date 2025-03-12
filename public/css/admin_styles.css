@@ -176,7 +176,7 @@ li{
     padding: 20px;
 }
 .section4div2{
-    width: 45%;
+    width: 60%;
     display: flex;
     justify-content: space-between;
 }
@@ -200,13 +200,14 @@ li{
 }
 .section4div2 span{
     font-size: 14px;
+    padding: 5px;
 }
 #indexselect{
     height:35px ;
     border: 1px lightgrey solid;
 }
 .section4div22{
-    width: 60%;
+    width: 70%;
     display: flex;
     justify-content: space-between;
 }
@@ -216,10 +217,11 @@ li{
     border-radius: 5px;
     height:35px ;
     border: 1px lightgrey solid;
-    width: 18%;
+    width: 16%;
 }
 .section4div22 span{
     font-size: 14px;
+    padding: 5px;
 }
 
 /* Modal styles */
@@ -259,8 +261,8 @@ li{
     color: gray; /* Optional: Change the color of the placeholder text */
 }
 .login-modal-content select {
-    width: 98%;
-    height: 40px;
+    width: 100%;
+    height: 45px;
     border-radius: 5px;
     border: 1px solid gray;
     margin-bottom: 10px;
@@ -308,8 +310,6 @@ action button
     width: 15%;
     height: 35%;
     z-index: 1000;
-
-    /*border: 1px solid grey;*/
     background: white;
 }
 
@@ -322,15 +322,7 @@ action button
     font-size: 12px;
     margin-le: -30%;
 }
-/*.modal-content input{*/
-/*    width: 100%;*/
-/*    height: 35px;*/
-/*    padding: 5px;*/
-/*    border-radius: 5px;*/
-/*    border: 1px solid #6b7280;*/
-/*}*/
 
-/*.btn { margin-top: 10px; padding: 10px 20px; cursor: pointer; }*/
 
 .dashboard-permission-head{
     display: flex;

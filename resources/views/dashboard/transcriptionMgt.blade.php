@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="css/admin_styles.css">
 {{--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">--}}
     <link href="https://iconsax.gitlab.io/i/icons.css" rel="stylesheet">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
 </head>
 <body>
@@ -50,14 +51,14 @@
 
                                             <!-- Role Filter -->
                                             <select name="Quality Rating">
-                                                <option value="">Role</option>
+                                                <option value="">Quality Rating</option>
                                                 <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>Admin</option>
                                                 <option value="user" {{ request('role') == 'user' ? 'selected' : '' }}>User</option>
                                             </select>
 
                                             <!-- Status Filter -->
                                             <select name="Date range">
-                                                <option value="">Status</option>
+                                                <option value="">Date range</option>
                                                 <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
                                                 <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Inactive</option>
                                             </select>
@@ -90,7 +91,7 @@
                         <th>User</th>
                         <th>Rating</th>
                         <th>Hours</th>
-                        <th>Actions</th>
+                        <th style="text-align: center">Actions</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -98,13 +99,19 @@
                         <tr>
                             <td><input type="checkbox"></td>
                             <td>{{ $user->id }}</td>
-                            <td>{{ $user->date }}</td>
+                            <td>{{ $user->created_at }}</td>
                             <td>{{ ucfirst($user->type) }}</td>
                             <td>{{ ucfirst($user->language) }}</td>
-                            <td>{{ $user->userId }}</td>
+                            <td>{{ $user->fullName }}</td>
                             <td>{{ ($user->rating) }}</td>
                             <td>{{ ($user->hours) }}</td>
-                            <td onclick="ActionModal(event)" class="action-buttons"> ***</td>
+                            <td onclick="ActionModal(event)"
+                                class="action-buttons"
+                                data-user-id="{{ $user->id }}"
+                                data-full-name="{{ $user->fullName }}"
+                                data-page="transcription"> <!-- Add this -->
+                                <i class="iconsax" icon-name="menu-meatballs"></i>
+                            </td>
                         </tr>
                     @empty
                         <tr>

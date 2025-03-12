@@ -13,17 +13,17 @@ return new class extends Migration
     {
         Schema::create('transcriptions', function (Blueprint $table) {
             $table->id();
-            $table->integer('userId');
-            $table->string('fileName');
+            $table->integer('userId')->nullable();
+            $table->string('fileName')->nullable();
             $table->enum('type',['write','speak','listen','review'])->default('speak');
-            $table->string('language');
-            $table->string('quality');
-            $table->string('hours');
-            $table->string('sentence_domain');
+            $table->string('language')->nullable();
+            $table->string('quality')->nullable();
+            $table->string('hours')->nullable();
+            $table->string('sentence_domain')->nullable();
             $table->text('sentence')->nullable();
-            $table->text('review', 8, 2);
-            $table->integer('updatedby-userId');
-            $table->string('status');
+            $table->text('review', 8, 2)->nullable();
+            $table->integer('updatedby-userId')->nullable();
+            $table->string('status')->nullable();
             $table->timestamps();
         });
     }

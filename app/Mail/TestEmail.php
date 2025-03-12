@@ -21,6 +21,10 @@ class TestEmail extends Mailable
         //
     }
 
+    public function build(){
+        return $this->view('mail.inviteadmin');
+    }
+
     /**
      * Get the message envelope.
      */

@@ -13,8 +13,6 @@
                 <a href="#"><img src="img/instagram.png" alt=""></a>
                 {{--            <a href="#"><i class="fab fa-linkedin"></i></a>--}}
             </div>
-
-
         </div>
         <div class="footersectioncontentline">
             <div class="border-vertical">
@@ -41,7 +39,7 @@
             </div>
         </form>
         <br>
-        <div class="social-icons">
+        <div class="social-icons-mobile">
             <a href="#"><img src="img/facebook.png" alt=""></a>
             <a href="#"><img src="img/x.png" alt=""></a>
             <a href="#"><img src="img/instagram.png" alt=""></a>

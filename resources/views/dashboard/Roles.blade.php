@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="css/admin_styles.css">
 {{--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">--}}
     <link href="https://iconsax.gitlab.io/i/icons.css" rel="stylesheet">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
 </head>
 <body>
@@ -18,7 +19,8 @@
         <section>
             <div class="section-role-header">
                 <h3>Roles $ Permissions</h3>
-                <div><button class="permission-button" onclick="openModals('loginModal')">Invite Admin</button></div>
+                <!-- Button to Open Invite Admin Modal -->
+                <div><button class="permission-button" id="openInviteModalButton">Invite Admin</button></div>
             </div>
 
             <div class="dashboard-role-card">
@@ -48,10 +50,6 @@
                 </div>
             </div>
         </section>
-{{--        <li>Admins: {{ $adminCount }}</li>--}}
-{{--        <li>Users: {{ $userCount }}</li>--}}
-{{--        <li>Moderators: {{ $moderatorCount }}</li>--}}
-{{--        <li>Transcribers: {{ $transcriberCount }}</li>--}}
         <br>
         <div>
             <h3>Admins</h3>
@@ -92,11 +90,12 @@
                         <td>{{ $user->fullName }}</td>
                         <td>{{ ucfirst($user->role) }}</td>
                         <td style="text-align: center">{{ $user->status ?? 'Unknown' }}</td>
-                        <td style="text-align: center" onclick="ActionModal(event)"
+                        <td onclick="ActionModal(event)"
                             class="action-buttons"
                             data-user-id="{{ $user->id }}"
-                            data-full-name="{{ $user->fullName }}">
-                            <i class="iconsax" icon-name="menu-meatballs" ></i>
+                            data-full-name="{{ $user->fullName }}"
+                            data-page="roles"> <!-- Add this -->
+                            <i class="iconsax" icon-name="menu-meatballs"></i>
                         </td>
                   </tr>
                 @endforeach
@@ -140,33 +139,31 @@
 
         <section>
             <!-- invite admin Modal -->
-            <div class="login-modal" id="loginModal">
+            <div class="login-modal" id="inviteAdminModal" >
                 <div class="login-modal-content">
-                    <span class="close-modal" id="closeModal">&times;</span>
+                    <span class="close-modal" id="closeInviteModal">&times;</span>
                     <h3>Invite Admin</h3>
-                    <input type="text" placeholder="fullname"><br>
-                    <select name="" id="">
+                    <input type="text" id="fullname" placeholder="fullname"><br>
+                    <select id="userType">
                         <option value="">Select user type</option>
-                        <option value="">Admin</option>
+                        <option value="admin">Admin</option>
                         <option value="">User</option>
                         <option value="">Moderator</option>
                         <option value="">Transcriber</option>
                     </select>
-                    <input type="text" placeholder="email"><br>
-                    <button class="btn permission-button" onclick="openModals('sentModal')"> Invite </button>
+                    <input type="text" id="email" placeholder="email"><br>
+                    <button class="btn permission-button" id="inviteButton">Invite</button>
                 </div>
             </div>
 
-            <!-- invite admin -->
-            <div class="login-modal" id="sentModal">
+            <!-- Success Modal (Shown After Successful Invite) -->
+            <div class="login-modal" id="sentModal" style="display: none;">
                 <div class="login-modal-content">
-                    {{--                    <span class="close-modal" id="closeModal">&times;</span>--}}
-                    <span class="close-modal" id="sentcloseModal">&times;</span>
-
+                    <span class="close-modal" id="sentCloseModal">&times;</span>
                     <h3>Invitation sent</h3>
                     <p>An invite has been <br>sent to your mail</p>
                     <p><i class="fa fa-message"></i></p>
-                    <button class="btn"> Check Mail</button>
+                    <button class="btn">Check Mail</button>
                 </div>
             </div>
 
@@ -189,15 +186,65 @@
                 </div>
             </div>
 
-
-
         </section>
     </div>
 
 </div>
 </body>
 <script src="js/adminscripts.js"></script>
-<script>
 
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Open invite modal
+        document.getElementById("openInviteModalButton").addEventListener("click", function () {
+            document.getElementById("inviteAdminModal").style.display = "flex"; // Change to flex
+        });
+
+        // Close invite modal
+        document.getElementById("closeInviteModal").addEventListener("click", function () {
+            document.getElementById("inviteAdminModal").style.display = "none";
+        });
+
+        // Close success modal
+        document.getElementById("sentCloseModal").addEventListener("click", function () {
+            document.getElementById("sentModal").style.display = "none";
+        });
+
+        // Handle Invite API Call
+        document.getElementById("inviteButton").addEventListener("click", function () {
+            var fullname = document.getElementById("fullname").value;
+            var userType = document.getElementById("userType").value;
+            var email = document.getElementById("email").value;
+
+            fetch('/inviteadmin', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}' // Include CSRF token
+                },
+                body: JSON.stringify({
+                    fullname: fullname,
+                    user_type: userType,
+                    email: email
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Server Response:", data);
+                    if (data.success) {
+                        alert('Admin invited successfully!');
+
+                        // Hide invite modal and show success modal
+                        document.getElementById("inviteAdminModal").style.display = "none";
+                        document.getElementById("sentModal").style.display = "flex";
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    });
 </script>
+
 </html>

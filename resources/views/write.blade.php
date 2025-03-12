@@ -9,6 +9,19 @@
             <td class="hoverable "><a href="{{url('review')}}"><i class="iconsax" icon-name="first-character" style="font-size: 15px"></i>  Review</a> </td>
         </tr>
     </table>
+
+    <div>
+        <select name="" id="">
+            <option value="">Language</option>
+            <option value="">English</option>
+            <option value="">Swahili</option>
+            <option value="">Yoruba</option>
+            <option value="">French</option>
+            <option value="">Igbo</option>
+            <option value="">Hausa</option>
+        </select>
+
+    </div>
 </section>
 <section class="write-height write-section-content" id="write-section" >
 
@@ -136,8 +149,9 @@
             let domain = document.getElementById("domain").value;
             let citation = document.getElementById("citation").value.trim();
             let confirm = document.getElementById("confirm").checked;
+            let type = "write";
 
-            if (!sentence || !domain || !citation || !confirm) {
+            if (!sentence || !domain || !citation || !confirm || !type) {
                 alert("Please fill all fields and confirm the checkbox.");
                 return;
             }
@@ -147,9 +161,9 @@
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
-                body: JSON.stringify({ sentence, domain, citation }),
+                body: JSON.stringify({ sentence, domain, citation, type }),
             })
                 .then(response => response.json())
                 .then(data => {

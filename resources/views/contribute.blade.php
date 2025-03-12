@@ -1,6 +1,7 @@
 @include('navbar')
 
 <section class="sectionnavbar">
+
     <table>
         <tr>
             <td class="hoverable active"><a href="{{url('contribute')}}" ><i class="iconsax" icon-name="mic-1" style="font-size: 15px"></i> Speak</a></td>
@@ -9,22 +10,39 @@
             <td class="hoverable "><a href="{{url('review')}}"><i class="iconsax" icon-name="first-character" style="font-size: 15px"></i>  Review</a> </td>
         </tr>
     </table>
+    <div>
+            <select name="language" id="language">
+                <option value="">Language</option>
+                <option value="english">English</option>
+                <option value="swahili">Swahili</option>
+                <option value="yoruba">Yoruba</option>
+                <option value="french">French</option>
+                <option value="igbo">Igbo</option>
+                <option value="hausa">Hausa</option>
+            </select>
+    </div>
 </section>
 <section class="speak write-section-content" id="speak-section">
     <div class="speak-content">
         <div class="speak-content-word">
             <p class="speak-content-words-p">Press <i class="fas fa-microphone"></i> then read the sentence aloud</p>
-            <p class="speak-content-word-p">The man went home <br>yesterday</p>
+            <p class="speak-content-word-p" id="sentence-text">Loading...</p>
         </div>
         <div class="speak-content-number">
-            <p>Start Recording <span> 1</span></p>
-            <span>2</span> <br>
-            <span>3</span> <br>
-            <span>4</span>
+            <p>Start Recording <span class="active" id="record-count">1</span></p>
+            <div class="number-list" id="number-list">
+                <span>2</span>
+                <span>3</span>
+                <span>4</span>
+                <span>5</span>
+            </div>
         </div>
     </div>
 
-    <div class="speak-content-mic"><img src="img/component4.png" alt=""></div>
+    <div class="speak-content-mic">
+        <img src="img/component4.png" alt="" id="record-btn">
+    </div>
+
     <div class="speak-content-ul">
 
         <div class="section-speak-guidelines">
@@ -42,52 +60,41 @@
 
 @include('footer')
 
-{{--    <script>--}}
-{{--        // JavaScript to handle tab switching--}}
-{{--        document.getElementById("speak-tab").addEventListener("click", function() {--}}
-{{--            showSection("speak-section");--}}
-{{--        });--}}
 
-{{--        document.getElementById("listen-tab").addEventListener("click", function() {--}}
-{{--            showSection("listen-section");--}}
-{{--        });--}}
+<script>
+    // Fetch sentences from PHP and convert to JavaScript array
+    let sentences = @json($sentences);
+    let index = 0;
+    let recordCount = 1;
 
-{{--        document.getElementById("write-tab").addEventListener("click", function() {--}}
-{{--            showSection("write-section");--}}
-{{--        });--}}
+    // Set first sentence on load
+    document.getElementById('sentence-text').innerText = sentences[index] || "No sentences available";
 
-{{--        document.getElementById("review-tab").addEventListener("click", function() {--}}
-{{--            showSection("review-section");--}}
-{{--        });--}}
-{{--        const tabs = document.querySelectorAll(".sectionnavbar ul li");--}}
-{{--        tabs.forEach(tab => {--}}
-{{--            tab.addEventListener("click", function () {--}}
-{{--                // Remove 'active' class from all tabs--}}
-{{--                tabs.forEach(t => t.classList.remove("active"));--}}
-{{--                // Add 'active' class to the clicked tab--}}
-{{--                this.classList.add("active");--}}
+    document.getElementById('record-btn').addEventListener('click', function () {
+        startRecording();
+    });
 
-{{--                // Determine the section to show based on the clicked tab's ID--}}
-{{--                if (this.id === "speak-tab") {--}}
-{{--                    showSection("speak-section");--}}
-{{--                } else if (this.id === "listen-tab") {--}}
-{{--                    showSection("listen-section");--}}
-{{--                } else if (this.id === "write-tab") {--}}
-{{--                    showSection("write-section");--}}
-{{--                } else if (this.id === "review-tab") {--}}
-{{--                    showSection("review-section");--}}
-{{--                }--}}
-{{--            });--}}
-{{--        });--}}
+    function startRecording() {
+        console.log("Recording started...");
 
-{{--        function showSection(sectionId) {--}}
-{{--            // Hide all sections--}}
-{{--            const sections = document.querySelectorAll(".section-content");--}}
-{{--            sections.forEach(section => {--}}
-{{--                section.style.display = "none";--}}
-{{--            });--}}
+        // Simulate recording process
+        setTimeout(() => {
+            console.log("Recording saved for: " + sentences[index]);
 
-{{--            // Show the selected section--}}
-{{--            document.getElementById(sectionId).style.display = "block";--}}
-{{--        }--}}
-{{--    </script>--}}
+            // Update recording count
+            document.getElementById('record-count').innerText = recordCount;
+
+            // Move to next sentence
+            index++;
+            recordCount++;
+
+            if (index < sentences.length) {
+                document.getElementById('sentence-text').innerText = sentences[index];
+            } else {
+                document.getElementById('sentence-text').innerText = "No more sentences!";
+            }
+
+        }, 3000); // Simulate a 3-second recording
+    }
+</script>
+

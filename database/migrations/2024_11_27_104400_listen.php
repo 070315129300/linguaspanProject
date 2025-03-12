@@ -13,14 +13,14 @@ return new class extends Migration
     {
         Schema::create('listens', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->string('language', 50);
-            $table->string('file_name');
-            $table->string('file_path');
-            $table->string('sentence_domain');
+            $table->integer('user_id')->nullable();
+            $table->string('language', 50)->nullable();
+            $table->string('file_name')->nullable();
+            $table->string('file_path')->nullable();
+            $table->string('sentence_domain')->nullable();
             $table->text('description')->nullable();
-            $table->decimal('audio_duration', 8, 2)->unsigned();
-            $table->integer('hours')->unsigned();
+            $table->decimal('audio_duration', 8, 2)->unsigned()->nullable();
+            $table->integer('hours')->unsigned()->nullable();
             $table->boolean('flag')->default(false);
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->timestamps();

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->integer('user_id')->nullable();
             $table->integer('admin_id')->nullable();
-            $table->string('reward_name');
+            $table->string('reward_name')->nullable();
             $table->integer('hours')->unsigned();
             $table->text('description')->nullable();
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');

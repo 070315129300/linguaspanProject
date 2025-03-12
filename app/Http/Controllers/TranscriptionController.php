@@ -21,11 +21,10 @@ class TranscriptionController extends Controller
         return $this->transcriptionService->getAllTranscriptions();
     }
 
-    public function store(TranscriptionRequest $request)
+    public function store(Request $request)
     {
-        var_dump('cayleb');
-        die();
-        return $this->transcriptionService->createTranscription($request->validated());
+
+        return $this->transcriptionService->createTranscription($request);
     }
 
     // Speak API

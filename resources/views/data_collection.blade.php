@@ -3,7 +3,7 @@
 <section class="section1-datacollection">
     <div class="section1-datacollection-head">
         <h1 style="font-size: 30px">English <span style="color: red">Data</span> Collection</h1>
-        <p><i><b> <span style="color:#4F4F4F ">Delta Segments just contain the most clips since <br>
+        <p><i><b> <span style="color:#4F4F4F ">Delta Segments just contain the most clips since
             the last release </span> Read more about this work.</b></i></p>
 
     </div>
@@ -174,27 +174,27 @@
     <div class="section3-datacollection-main">
         <h2>What's inside the Voice <br> data Collection ?</h2>
 
-        <p>Each entry in the dataset consists of a unique MP3 and corresponding text file. Many of the 24,096 <br>
-        recorded hours in the dataset also include demographic metadata like age, sex and that can <br>
-        help train the accuracy of the speech recognition engines. The data collection currently consists of <br>
-        14,096 validated hours in 1,096 Languages, but we're always adding more voices and languages. <br>
+        <p>Each entry in the dataset consists of a unique MP3 and corresponding text file. Many of the 24,096
+        recorded hours in the dataset also include demographic metadata like age, sex and that can
+        help train the accuracy of the speech recognition engines. The data collection currently consists of
+        14,096 validated hours in 1,096 Languages, but we're always adding more voices and languages.
         Take a look at our <a href="">Language page</a> to request a language or start contributing.</p>
     </div>
     <div class="section3-datacollection-content">
         <div>
             <p>Validated hours</p>
             <img src="img/component1.png" alt="">
-            <p>30,096</p>
+            <p>{{$approvedHours}}</p>
         </div>
         <div>
             <p>Recorded hours</p>
             <img src="img/component3.png" alt="">
-            <p>24,096</p>
+            <p>{{$totalHours}}</p>
         </div>
         <div>
             <p>Languages</p>
             <img src="img/component.png" alt="">
-            <p>1,096</p>
+            <p>{{$totalLanguages}}</p>
         </div>
     </div>
 </section>

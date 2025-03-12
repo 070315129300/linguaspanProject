@@ -7,3 +7,4 @@
         </tr>
     </table>
 </section>
+background: #F2876A33;

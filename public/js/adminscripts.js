@@ -1,43 +1,22 @@
-//Open the modal
-function openModals(modalId) {
-    const modals = document.getElementById(modalId);
-    if (modals) {
-        modals.style.display = 'flex';
-    }
-}
 
-// Close the modal
-function closeModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if (modal) {
-        modal.style.display = 'none';
-    }
-}
 // Attach close functionality to the close button
 document.getElementById('sentcloseModal').onclick = function () {
     closeModal('sentModal');
 };
 
-// Attach close functionality to the close button
+// close functionality to the close button
 document.getElementById('closeModal').onclick = function () {
     closeModal('loginModal');
 };
 
-
-// Close modal when clicking outside the modal content
-window.onclick = function (event) {
-    const modal = document.getElementById('loginModal');
-    if (event.target === modal) {
-        modal.style.display = 'none';
-    }
-};
 function ActionModal(event) {
     const modal = document.getElementById('actionModal');
     const trigger = event.currentTarget; // Get the clicked element
 
-    // Get user ID and full name from the clicked action button
+    // Get user ID, full name, and page identifier
     const userId = trigger.getAttribute('data-user-id');
     const fullName = trigger.getAttribute('data-full-name');
+    const page = trigger.getAttribute('data-page'); // Identify the page
 
     // Get the position of the trigger
     const rect = trigger.getBoundingClientRect();
@@ -49,46 +28,56 @@ function ActionModal(event) {
     modal.style.top = `${rect.bottom + offsetY}px`;
     modal.style.display = 'block';
 
+    let modalContent = '';
+
+    // Determine modal content based on the page
+    if (page === 'users') {
+        modalContent = `
+            <div class="modal-content">
+                <p onclick="openModal('suspend', '${userId}', '${fullName}')">Suspend ${fullName}</p>
+                <p onclick="openModal('viewmore', '${userId}', '${fullName}')">View More ${fullName}</p>
+                <p onclick="openModal('assign-role', '${userId}', '${fullName}')">Assign Role</p>
+                <p onclick="openModal('activate-admin', '${userId}', '${fullName}')">Activate ${fullName}</p>
+                <p onclick="openModal('reset-password', '${userId}', '${fullName}')">Reset Password ${fullName}</p>
+            </div>
+        `;
+    } else if (page === 'roles') {
+        modalContent = `
+            <div class="modal-content">
+        <p><a href="${window.location.origin}/permission" class="href_black">Role & Permissions</a></p>
+                <p onclick="openModal('suspend', '${userId}', '${fullName}')">Suspend ${fullName}</p>
+                <p onclick="openModal('activate-admin', '${userId}', '${fullName}')">Activate ${fullName}</p>
+            </div>
+        `;
+    }else if (page === 'reward') {
+        modalContent = `
+            <div class="modal-content">
+                    <p onclick="openModal('reward', '${userId}', '${fullName}')">Reward ${fullName}</p>
+               </div>
+        `;
+    } else if (page === 'approvals') {
+        modalContent = `
+            <div class="modal-content">
+                <p onclick="openModal('approve', '${userId}', '${fullName}')">Approve ${fullName}</p>
+                <p onclick="openModal('reject', '${userId}', '${fullName}')">Reject ${fullName}</p>
+                <p onclick="openModal('view-edit', '${userId}', '${fullName}')">View & Edit</p>
+                <p onclick="openModal('flag', '${userId}', '${fullName}')">Flag ${fullName}</p>
+            </div>
+        `;
+    } else {
+        modalContent = `
+            <div class="modal-content">
+                <p onclick="openModal('enable')">Enable</p>
+                <p onclick="openModal('delete')">Disable</p>
+                <p onclick="openModal('assign-role')">Set Priority Level</p>
+                <p onclick="openModal('activate-admin')">Delete</p>
+            </div>
+        `;
+    }
+
     // Update the modal content dynamically
-    modal.innerHTML = `
-        <div class="modal-content">
-            <p onclick="openModal('suspend', '${userId}', '${fullName}')">Suspend ${fullName}</p>
-            <p onclick="openModal('delete', '${userId}', '${fullName}')">View More ${fullName}</p>
-            <p onclick="openModal('assign-role', '${userId}', '${fullName}')">Assign Role</p>
-            <p onclick="openModal('activate-admin', '${userId}', '${fullName}')">Deactivate ${fullName}</p>
-            <p onclick="openModal('reset-password', '${userId}', '${fullName}')">Reset Password ${fullName}</p>
-        </div>
-
-        <div class="modal-content">
-
-<!--        //for role page-->
-         <p><a href="{{ url('permission') }}" class="href_black">Role & Permissions</a></p>
-              <p onclick="openModal('suspend', '${userId}', '${fullName}')">Suspend ${fullName}</p>
-             <p onclick="openModal('delete', '${userId}', '${fullName}')">View More ${fullName}</p>
-            <p onclick="openModal('activate-admin', '${userId}', '${fullName}')">Deactivate ${fullName}</p>
-        </div>
-
-         <div class="modal-content">
-        <p onclick="openModal('reward', '${userId}', '${fullName}')">Reward ${fullName}</p>
-        </div>
-
-          <div class="modal-content">
-        <p class="" onclick="openModal('approve', '{{ $usr->id }}', '{{ $usr->fullName }}')">Approve {{ $usr->fullName }}</p>
-                <p onclick="openModal('reject', '{{ $usr->id }}', '{{ $usr->fullName }}')">Reject  {{ $usr->fullName }}</p>
-                <p onclick="openModal('view-edit', '{{ $usr->id }}', '{{ $usr->fullName }}')">View & Edit</p>
-                <p onclick="openModal('flag', '{{ $usr->id }}', '{{ $usr->fullName }}')">flag {{ $usr->fullName }}</p>
-        </div>
-
-        <div class="modal-content">
-           <p class="" onclick="openModal('approve' )">Enable</p>
-                    <p onclick="openModal('delete')">Disable </p>
-                    <p onclick="openModal('assign-role')">Set Priority level</p>
-                    <p onclick="openModal('activate-admin')">Delete </p>
-        </div>
-
-    `;
+    modal.innerHTML = modalContent;
 }
-
 
 // Close modal when clicking outside
 document.addEventListener('click', function (e) {
@@ -125,11 +114,12 @@ function openModal(action, userId, userName) {
                 <select id="roleSelect">
                     <option value="transcriber">Transcriber</option>
                     <option value="translator">Translator</option>
+                    <option value="translator">Admin</option>
                 </select>
             `;
             confirmButton.onclick = () => {
                 const role = document.getElementById('roleSelect').value;
-                performAction('assign-role', userId, role);
+                performAction('assignrole', userId, role);
             };
             break;
         case 'make-admin':
@@ -144,8 +134,19 @@ function openModal(action, userId, userName) {
             break;
         case 'reset-password':
             modalTitle.textContent = 'Reset Password';
-            modalMessage.textContent = `Are you sure you want to make ${userName} an admin?`;
-            confirmButton.onclick = () => performAction('reset-password', userId);
+            modalMessage.textContent = `Are you sure you want to reset ${userName} password?`;
+            confirmButton.onclick = () => performAction('resetpassword', userId);
+            break;
+        case 'activate-admin':
+            modalTitle.textContent = 'Reset Password';
+            modalMessage.textContent = `Are you sure you want activate ${userName}?`;
+            confirmButton.onclick = () => performAction('activateadmin', userId);
+            break;
+
+        case 'viewmore':
+            modalTitle.textContent = 'View more';
+            modalMessage.textContent = `username ${userName}`;
+            confirmButton.onclick = () => closeModals('', userId);
             break;
         default:
             modalTitle.textContent = 'Action';
@@ -157,113 +158,51 @@ function openModal(action, userId, userName) {
 }
 
 
-
 function performAction(action, userId, role = null) {
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    console.log(`performAction triggered - Action: ${action}, User ID: ${userId}, Role: ${role}`);
 
-    const data = {
-        action,
-        role, // Only needed for assign-role
-    };
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+    if (!csrfToken) {
+        console.error('CSRF token not found! Make sure the meta tag is correctly set in your Blade file.');
+        return;
+    }
+    const data = { action };
+    if (role) data.role = role; // Only add role if it's needed
 
     const url = `/admin/${action}/${userId}`; // Include userId in the URL
-
+        console.log(url)
     fetch(url, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': csrfToken,
+            'X-CSRF-TOKEN':csrfToken,
         },
         body: JSON.stringify(data),
     })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
+            console.log('Server Response:', data);
             alert(data.message);
-            closeModal();
+            closeModals();
             location.reload(); // Reload to reflect changes
         })
         .catch(error => console.error('Error:', error));
 }
+
+
 function closeModals() {
     const modal = document.getElementById('dynamicModal');
     modal.style.display = 'none';
 }
 
-function showTable(category) {
-    // Hide all tables
-    document.querySelectorAll('.table-content').forEach(table => {
-        table.style.display = 'none';
-    });
 
-    // Remove "selected" class from all list items
-    document.querySelectorAll('#user-categories li').forEach(li => {
-        li.classList.remove('selected');
-    });
 
-    // Display the selected table and add "selected" class to the clicked li
-    document.querySelector(`.table-content[data-category="${category}"]`).style.display = 'block';
-    document.querySelector(`#user-categories li[data-category="${category}"]`).classList.add('selected');
-}
-
-// Initialize by showing the first table (e.g., General Users)
-showTable('general');
-
-// Get all the list items and table content divs
-const listItems = document.querySelectorAll('#user-categories li');
-const tableContents = document.querySelectorAll('.table-content');
-
-// Add click event to each list item
-listItems.forEach(item => {
-    item.addEventListener('click', () => {
-        // Get the category from the clicked list item
-        const category = item.getAttribute('data-category');
-
-        // Show the relevant table and hide others
-        tableContents.forEach(tableContent => {
-            if (tableContent.getAttribute('data-category') === category) {
-                tableContent.style.display = 'block';
-            } else {
-                tableContent.style.display = 'none';
-            }
-        });
-    });
-});
-
-document.querySelectorAll('select').forEach(select => {
-    select.addEventListener('change', () => {
-        document.getElementById('filter-form').submit();
-    });
-});
-
-document.querySelector('.btn.permission-button').addEventListener('click', function() {
-    var fullname = document.querySelector('input[placeholder="fullname"]').value;
-    var userType = document.querySelector('select').value;
-    var email = document.querySelector('input[placeholder="email"]').value;
-
-    // Send AJAX request
-    fetch('/invite-admin', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-        },
-        body: JSON.stringify({
-            fullname: fullname,
-            user_type: userType,
-            email: email
-        })
-    })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('Admin invited successfully!');
-            } else {
-                alert('Error: ' + data.error);
-            }
-        })
-        .catch(error => console.error('Error:', error));
-});
-
+// to get csv files
 function exportTableToCSV() {
     let table = document.querySelector(".user-mgt-table");
     let rows = Array.from(table.rows);

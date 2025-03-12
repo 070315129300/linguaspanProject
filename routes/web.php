@@ -31,19 +31,7 @@ Route::get('language', [PagesController::class, 'language']);
 Route::get('dataCollection', [PagesController::class, 'dataCollection']);
 Route::get('about', [PagesController::class, 'about']);
 
-//Route::middleware('auth')->group(function () {
-//    Route::get('profiles', [PagesController::class, 'profiles']);
-//    Route::get('stats', [PagesController::class, 'stats']);
-//    Route::get('change_info', [PagesController::class, 'changeinfo']);
-//    Route::get('delete_profile', [PagesController::class, 'delete_profile']);
-//    Route::get('download', [PagesController::class, 'download']);
-//    Route::get('/profile', [ProfileController::class, 'updateprofile'])->name('profile.edit');
-//    Route::post('/profile/update', [ProfileController::class, 'updateprofile'])->name('profile.update');
-//    Route::post('/changeinfo/update', [ProfileController::class, 'updatechangeinfo'])->name('changeinfo.update');
-//    Route::post('/profile.delete', [ProfileController::class, 'updatedelete'])->name('profile.delete');
-//});
-
-
+Route::middleware('auth')->group(function () {
     Route::get('profiles', [PagesController::class, 'profiles']);
     Route::get('stats', [PagesController::class, 'stats']);
     Route::get('change_info', [PagesController::class, 'changeinfo']);
@@ -53,6 +41,8 @@ Route::get('about', [PagesController::class, 'about']);
     Route::post('/profile/update', [ProfileController::class, 'updateprofile'])->name('profile.update');
     Route::post('/changeinfo/update', [ProfileController::class, 'updatechangeinfo'])->name('changeinfo.update');
     Route::post('/profile.delete', [ProfileController::class, 'updatedelete'])->name('profile.delete');
+});
+
 
 // Admin login route (publicly accessible)
 Route::get('/admin/login', [AdminController::class, 'login'])->name('adminlogin');
@@ -67,15 +57,16 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/languagemanagement', [AdminController::class, 'languagemanagement'])->name('admin.languagemanagement');
     Route::get('/settingsmanagement', [AdminController::class, 'settingsmanagement'])->name('admin.settingsmanagement');
     Route::get('/assignrole', [AdminController::class, 'assignrole'])->name('admin.assignrole');
-//    Route::post('/suspendUser', [AdminController::class, 'suspendUser'])->name('admin.suspendUser');
-//    Route::post('/activateUser', [AdminController::class, 'activateUser'])->name('admin.activateUser');
-    Route::post('/admin/suspend/{userid}', [AdminController::class, 'suspendUser']);
+    Route::post('/admin/activateadmin/{userId}', [AdminController::class, 'activateUser'])->name('admin.activateUser');
+    Route::post('/admin/suspend/{userId}', [AdminController::class, 'suspendUser']);
     Route::post('/admin/delete', [AdminController::class, 'deleteUser']);
-    Route::post('/admin/assign-role', [AdminController::class, 'assignRole']);
+    Route::post('/admin/resetpassword', [AdminController::class, 'resetpassword']);
+    Route::post('/admin/assignrole/{userId}', [AdminController::class, 'assignRole']);
     Route::post('/admin/make-admin', [AdminController::class, 'makeAdmin']);
 
     //invite user or admin
-    Route::post('/invite-admin', [AdminController::class, 'inviteAdmin']);
+    Route::post('/inviteadmin', [AdminController::class, 'inviteAdmin']);
+    Route::post('/createlanguage', [AdminController::class, 'createlanguage']);
 });
 
 Route::prefix('transcriptions')->group(function () {

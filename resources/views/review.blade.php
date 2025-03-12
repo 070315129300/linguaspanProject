@@ -10,6 +10,19 @@
         </tr>
 
     </table>
+
+    <div>
+        <select name="" id="">
+            <option value="">Language</option>
+            <option value="">English</option>
+            <option value="">Swahili</option>
+            <option value="">Yoruba</option>
+            <option value="">French</option>
+            <option value="">Igbo</option>
+            <option value="">Hausa</option>
+        </select>
+
+    </div>
 </section>
 <br>
 <section class="review write-section-content" id="review-section">

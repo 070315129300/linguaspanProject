@@ -2736,7 +2736,7 @@ h2 {
     .backgroundcolor {
         background-image: url('{{ asset("img/webHero.png") }}');
         background-size: 450px 650px;
-        /* Width and height */
+        /* Width and height */g
         background-repeat: no-repeat;
         /* Prevent the image from repeating */
         background-position: center;

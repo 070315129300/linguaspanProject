@@ -159,7 +159,7 @@
             multi-language dataset of voices that anyone can use to train speech-enabled applications.</p>
             <br>
 {{--            <img src="img/ai-robot2.png" alt="" style="width: 150px; height: 150px; margin: 0px;">--}}
-            <img src="{{ asset('img/ai-robot2.png') }}" alt="" style="width: 150px; height: 150px; margin: 0px;">
+            <img src="'img/ai-robot2.png'" alt="" style="width: 150px; height: 150px; margin: 0px;">
 
         </div>
         <div>
@@ -186,18 +186,18 @@
         <div>
             <p>Validated hours</p>
 
-            <img src="{{ asset('img/Component1.png') }}" alt="" height="150px" width="150px ">
+            <img src="img/Component1.png" alt="" height="150px" width="150px ">
             <p>{{$approvedHours}}</p>
         </div>
         <div>
             <p>Recorded hours</p>
 
-            <img src="{{ asset('img/Component3.png') }}"alt="" height="150px" width="150px ">
+            <img src="img/Component3.png"alt="" height="150px" width="150px ">
             <p>{{$totalHours}}</p>
         </div>
         <div>
             <p>Languages</p>
-            <img src="{{ asset('img/Component.png') }}"alt="" height="150px" width="150px ">
+            <img src="img/Component.png"alt="" height="150px" width="150px ">
 
             <p>{{$totalLanguages}}</p>
         </div>

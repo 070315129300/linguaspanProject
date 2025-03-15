@@ -186,18 +186,18 @@
         <div>
             <p>Validated hours</p>
 
-            <img src="img/img.jpg" alt="" height="150px" width="150px ">
+            <img src="img/Component1.png" alt="" height="150px" width="150px ">
             <p>{{$approvedHours}}</p>
         </div>
         <div>
             <p>Recorded hours</p>
 
-            <img src="img/img.jpg"alt="" height="150px" width="150px ">
+            <img src="img/Component3.png"alt="" height="150px" width="150px ">
             <p>{{$totalHours}}</p>
         </div>
         <div>
             <p>Languages</p>
-            <img src="img/img.jpg"alt="" height="150px" width="150px ">
+            <img src="img/Component.png"alt="" height="150px" width="150px ">
 
             <p>{{$totalLanguages}}</p>
         </div>

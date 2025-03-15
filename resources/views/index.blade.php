@@ -11,7 +11,7 @@
     <link href="https://iconsax.gitlab.io/i/icons.css" rel="stylesheet">
 </head>
 <body>
-<section class="backgroundcolor">
+<section class="backgroundcolor" style=" background-image: url('{{ asset("img/webHero.png") }}');">
 <header>
    <h3> <a href="/" class="logo"><span>L</span>inguaSpan</a></h3>
     <ul class="navlist">

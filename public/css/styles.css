@@ -429,6 +429,9 @@ h3{
 @media (max-width: 500px) {
     left: 0% !important;
 }
+@media (max-width: 1440px) {
+    left: 27% !important;
+}
 }
 
 .edit-tabB {
@@ -454,6 +457,9 @@ h3{
     }
 @media (max-width: 500px) {
     right: 0% !important;
+}
+@media (max-width: 1440px) {
+    left: 60% !important;
 }
 }
 
@@ -2734,7 +2740,7 @@ h2 {
     }
 
     .backgroundcolor {
-        background-image: url('{{ asset("img/webHero.png") }}');
+
         background-size: 450px 650px;
         /* Width and height */g
         background-repeat: no-repeat;

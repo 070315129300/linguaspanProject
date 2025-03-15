@@ -343,7 +343,7 @@
                     <div>
                         <a href="{{url('contribute')}}">
 
-                            <img src="img/Component4.png" alt="" height="120px" width="150px">
+                            <img src="img/img.jpg" alt="" height="120px" width="150px">
 
                         </a>
                     </div>

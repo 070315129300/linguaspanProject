@@ -11,7 +11,7 @@
     <link href="https://iconsax.gitlab.io/i/icons.css" rel="stylesheet">
 </head>
 <body>
-<section class="backgroundcolor" style=" background-image: url('{{ asset("img/webHero.png") }}');">
+<section class="backgroundcolor" style=" background-image:img/webHero.png">
 <header>
    <h3> <a href="/" class="logo"><span>L</span>inguaSpan</a></h3>
     <ul class="navlist">
@@ -149,6 +149,7 @@
                 <img src="img/rounded-img.png" alt=""  class="line-img">
               </div>
               <div class="edit-tab">
+                  <a href="{{url('contribute')}}">
                 <div class="icon-tab">
                    <div class="icon-card">
                      <img src="img/edit.png" alt="">
@@ -163,8 +164,10 @@
                     </div>
                    </div>
                 </div>
+                  </a>
               </div>
               <div class="edit-tabB">
+                  <a href="{{url('contribute')}}">
                 <div class="icon-tab">
                    <div class="icon-card">
                      <img src="img/microphone2.png" alt="">
@@ -179,8 +182,10 @@
                     </div>
                    </div>
                 </div>
+                  </a>
               </div>
               <div class="edit-tabC">
+                  <a href="{{url('contribute')}}">
                 <div class="icon-tab">
                    <div class="icon-card">
                      <img src="img/soundA.png" alt="">
@@ -195,8 +200,10 @@
                     </div>
                    </div>
                 </div>
+                  </a>
               </div>
               <div class="edit-tabD">
+                  <a href="{{url('contribute')}}">
                 <div class="icon-tab">
                    <div class="icon-card">
                      <img src="img/firstlineA.png" alt="">
@@ -211,6 +218,7 @@
                     </div>
                    </div>
                 </div>
+                  </a>
               </div>
            </div>
 
@@ -276,7 +284,7 @@
 {{--                       <div class="section3backgroundimg">--}}
 {{--                           <img src="img/ai-robot.png" alt="">--}}
 {{--                       </div>--}}
-                       <img src="img/Caleb.jpg" alt="" height="400px" width="400px">
+                       <a href="{{url('contribute')}}"> <img src="img/Caleb.jpg" alt="" height="400px" width="400px"></a>
                    </div>
                </div>
                 <div class="section3div2">

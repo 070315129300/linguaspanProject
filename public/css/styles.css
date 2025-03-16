@@ -424,13 +424,16 @@ h3{
     left: 25%;
 
     @media (max-width: 768px) {
-        left: 8% !important;
+        left: 0% !important;
     }
 @media (max-width: 500px) {
-    left: 0% !important;
+    left: 10% !important;
 }
 @media (max-width: 1440px) {
     left: 27% !important;
+}
+@media (max-width: 1024px) {
+    left: 25% !important;
 }
 }
 
@@ -453,10 +456,10 @@ h3{
     right: 25%;
 
     @media (max-width: 768px) {
-        right: 8% !important;
+        right: 0!important;
     }
 @media (max-width: 500px) {
-    right: 0% !important;
+    right: -8% !important;
 }
 @media (max-width: 1440px) {
     left: 60% !important;

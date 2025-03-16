@@ -9,12 +9,12 @@
     <div class="section-stats-head">
        <div class="section-stats-main">
            <p style="float:left !important"><span style="color: blue;">{{$totalUserTranscriptions}}</span>/ 45 Clips you've Recorded</p><br>
-           <img src="img/component4.png" alt=""><br>
+           <img src="img/Component4.png" alt=""><br>
            <p>{{$totalTranscriptions}}/ 1200 <span> Today's Common Voice progress on clips recorded</span></p>
        </div>
         <div class="section-stats-main">
             <p style="float:left !important"><span  style="color: red">{{$totalUserApprovedTranscriptions}}</span>/ 45 Clips you've Validated</p><br>
-            <img src="img/component3.png" alt=""><br>
+            <img src="img/Component3.png" alt=""><br>
             <p>{{$totalApprovedTranscriptions}}/ 1200 <span> Today's Common Voice progress on clips recorded</span></p>
 
         </div>

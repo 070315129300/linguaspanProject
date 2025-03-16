@@ -158,8 +158,7 @@
             <p class="section2-datacollection-content">We're building an open source,
             multi-language dataset of voices that anyone can use to train speech-enabled applications.</p>
             <br>
-{{--            <img src="img/ai-robot2.png" alt="" style="width: 150px; height: 150px; margin: 0px;">--}}
-            <img src="'img/ai-robot2.png'" alt="" style="width: 150px; height: 150px; margin: 0px;">
+            <img src="img/ai-robot2.png" alt="" style="width: 150px; height: 150px; margin: 0px;">
 
         </div>
         <div>

@@ -64,10 +64,21 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/admin/assignrole/{userId}', [AdminController::class, 'assignRole']);
     Route::post('/admin/make-admin', [AdminController::class, 'makeAdmin']);
 
+
+
+
+
+
     //invite user or admin
     Route::post('/inviteadmin', [AdminController::class, 'inviteAdmin']);
     Route::post('/createlanguage', [AdminController::class, 'createlanguage']);
 });
+
+Route::get('/getnextcontribute', [PagesController::class, 'getnextcontribute']);
+Route::post('/save-recordings', [PagesController::class, 'saverecordings']);
+
+Route::get('/getnextlisten', [PagesController::class, 'getnextlisten']);
+Route::post('/save-listening', [PagesController::class, 'savelistening']);
 
 Route::prefix('transcriptions')->group(function () {
     Route::get('/', [TranscriptionController::class, 'index']);
@@ -80,7 +91,7 @@ Route::prefix('getspeak')->group(function () {
 });
 
 Route::prefix('getreview')->group(function () {
-    Route::get('/', [TranscriptionController::class, 'getReview']);
+   // Route::get('/', [TranscriptionController::class, 'getReview']);
     Route::post('/{id}/update', [TranscriptionController::class, 'updateReview']);
     Route::get('/next', [TranscriptionController::class, 'getNextReview']);
 });

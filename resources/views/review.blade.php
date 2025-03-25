@@ -12,14 +12,14 @@
     </table>
 
     <div>
-        <select name="" id="">
-            <option value="">Language</option>
-            <option value="">English</option>
-            <option value="">Swahili</option>
-            <option value="">Yoruba</option>
-            <option value="">French</option>
-            <option value="">Igbo</option>
-            <option value="">Hausa</option>
+        <select name="language" id="selectlanguage">
+            <option value="english">Language</option>
+            <option value="english">English</option>
+            <option value="swahili">Swahili</option>
+            <option value="yoruba">Yoruba</option>
+            <option value="french">French</option>
+            <option value="igbo">Igbo</option>
+            <option value="hausa">Hausa</option>
         </select>
 
     </div>
@@ -28,19 +28,6 @@
 <section class="review write-section-content" id="review-section">
 
     <div class="review-content">
-{{--        <div class="review-content-word">--}}
-{{--            <p class="speak-content-words-p">Press <i class="iconsax" icon-name="sound" style="font-size: 15px"></i> to listen & choose Yes/No to confirm if sentence was well read</p>--}}
-{{--            <br>--}}
-{{--            <p class="speak-content-word-p">The man went home <br>--}}
-{{--                yesterday</p>--}}
-{{--            <br>--}}
-{{--            <div  class="review-content-mic1">--}}
-{{--                <p class="speak-content-mic2"><i class="iconsax" icon-name="tick-circle" style="font-size: 15px;color: green"></i>  Yes </p>--}}
-{{--                <p class="speak-content-mic2"><i class="iconsax" icon-name="media-forward" style="font-size: 15px;"></i> No Skip </p>--}}
-{{--                <p class="speak-content-mic2"><i class="iconsax" icon-name="x-circle" style="font-size: 15px;color: red"></i>  No </p>--}}
-{{--            </div>--}}
-
-{{--        </div>--}}
 
         <div class="review-content-word">
             <p class="speak-content-words-p">
@@ -49,17 +36,7 @@
             <br>
             <p class="speak-content-word-p" id="review-text">Loading...</p>
             <br>
-{{--            <div class="review-content-mic1">--}}
-{{--                <p class="speak-content-mic2" onclick="submitReview('ok')">--}}
-{{--                    <i class="iconsax" icon-name="tick-circle" style="font-size: 15px;color: green"></i> Yes--}}
-{{--                </p>--}}
-{{--                <p class="speak-content-mic2" onclick="loadNextReview()">--}}
-{{--                    <i class="iconsax" icon-name="media-forward" style="font-size: 15px;"></i> No Skip--}}
-{{--                </p>--}}
-{{--                <p class="speak-content-mic2" onclick="submitReview('rejected')">--}}
-{{--                    <i class="iconsax" icon-name="x-circle" style="font-size: 15px;color: red"></i> No--}}
-{{--                </p>--}}
-{{--            </div>--}}
+
             <div class="review-content-mic1">
                 <button class="speak-content-mic2" onclick="submitReview('approved')">
                     <i class="iconsax" icon-name="tick-circle" style="font-size: 15px;color: green"></i> Yes
@@ -108,21 +85,25 @@
 <script>
     let currentReviewId = null;
 
-    // Fetch the next review
     function loadNextReview() {
-        fetch('/getreview/next')
+        const selectedLanguage = document.getElementById('selectlanguage').value;
+
+        fetch(`/getreview/next?language=${selectedLanguage}`)
             .then(response => response.json())
             .then(data => {
-                if (data.message) {
-                    document.getElementById('review-text').innerText = 'No more reviews available';
+                if (data.message === 'Not available') {
+                    document.getElementById('review-text').innerText = 'Not available';
                     currentReviewId = null;
                 } else {
-                    document.getElementById('review-text').innerText = data.sentence; // Ensure this matches your column name
-                    currentReviewId = data.id;
+                    document.getElementById('review-text').innerText = data.sentence;
+                    // Set currentReviewId from the fetched data
+                    currentReviewId = data.id; // Ensure your backend returns "id"
                 }
             })
             .catch(error => console.error('Error:', error));
     }
+    // Reload reviews when language changes
+    document.getElementById('selectlanguage').addEventListener('change', loadNextReview);
 
     // Submit review decision
     function submitReview(status) {

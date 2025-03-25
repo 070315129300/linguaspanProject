@@ -11,15 +11,15 @@
         </tr>
     </table>
     <div>
-            <select name="language" id="language">
-                <option value="">Language</option>
-                <option value="english">English</option>
-                <option value="swahili">Swahili</option>
-                <option value="yoruba">Yoruba</option>
-                <option value="french">French</option>
-                <option value="igbo">Igbo</option>
-                <option value="hausa">Hausa</option>
-            </select>
+        <select name="language" id="selectlanguage">
+            <option value="english">Language</option>
+            <option value="english">English</option>
+            <option value="swahili">Swahili</option>
+            <option value="yoruba">Yoruba</option>
+            <option value="french">French</option>
+            <option value="igbo">Igbo</option>
+            <option value="hausa">Hausa</option>
+        </select>
     </div>
 </section>
 <section class="speak write-section-content" id="speak-section">
@@ -29,19 +29,21 @@
             <p class="speak-content-word-p" id="sentence-text">Loading...</p>
         </div>
         <div class="speak-content-number">
-            <p>Start Recording <span class="active" id="record-count">1</span></p>
-            <div class="number-list" id="number-list">
-                <span>2</span>
-                <span>3</span>
-                <span>4</span>
-                <span>5</span>
-            </div>
+            <p>Start Recording  <span class="active" id="record-count">1</span></p>
+            <p>Start Recording <span class="active" id="record-count">2</span></p>
+            <p>Start Recording <span class="active" id="record-count">3</span></p>
+            <p>Start Recording <span class="active" id="record-count">4</span></p>
+            <p>Start Recording <span class="active" id="record-count">5</span></p>
         </div>
     </div>
 
+
+
     <div class="speak-content-mic">
-        <img src="img/component4.png" alt="" id="record-btn">
+        <img src="img/Component4.png" alt="Microphone" id="record-btn" style="cursor: pointer;">
     </div>
+
+
 
     <div class="speak-content-ul">
 
@@ -52,8 +54,7 @@
         </div>
         <div class="section-speak-skip">
             <p><i class="iconsax" icon-name="media-forward" style="font-size: 15px;"></i> Skip</p>
-
-            <p>Submit</p>
+            <p id="submitBtn" style="cursor: pointer;">Submit</p>
         </div>
     </div>
 </section>
@@ -62,39 +63,264 @@
 
 
 <script>
+
+    let currentReviewId = null;
+    let currentReviewfilename = null;
+
+
+    function loadNextSentence() {
+        const selectedLanguage = document.getElementById('selectlanguage').value;
+
+        fetch(`/getnextcontribute?language=${selectedLanguage}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log("Response:", data); // Debugging line
+
+                if (data.message === 'Not available') {
+                    document.getElementById('sentence-text').innerText = 'Not available';
+                } else if (data.message === 'Success' && data.sentence) {
+                    document.getElementById('sentence-text').innerText = data.sentence.sentence;
+                    //currentReviewId = data.sentence.id;
+                    currentReviewfilename = data.sentence.file_name;
+                } else {
+                    document.getElementById('sentence-text').innerText = 'Error fetching sentence';
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    // Reload sentences when language changes
+    document.getElementById('selectlanguage').addEventListener('change', loadNextSentence);
+
+    // function loadNextSentence() {
+    //     const selectedLanguage = document.getElementById('selectlanguage').value;
+    //
+    //     fetch(`/getnextcontribute?language=${selectedLanguage}`)
+    //         .then(response => response.json())
+    //         .then(data => {
+    //             if (data.message === 'Not available') {
+    //                 document.getElementById('sentence-text').innerText = 'Not available';
+    //             } else if (data.source === 'database') {
+    //                 // Load from database
+    //                 document.getElementById('sentence-text').innerText = data.sentence.sentence;
+    //                 currentReviewId = data.sentence.id;
+    //                 currentReviewfilename = data.sentence.file_name;
+    //             } else if (data.source === 's3') {
+    //                 // Load from S3 bucket
+    //                 document.getElementById('sentence-text').innerText = data.fileContent;
+    //                 currentReviewfilename = data.randomS3File;
+    //             }
+    //         })
+    //         .catch(error => console.error('Error:', error));
+    // }
+    // // Reload sentences when language changes
+    // document.getElementById('selectlanguage').addEventListener('change', loadNextSentence);
+
     // Fetch sentences from PHP and convert to JavaScript array
-    let sentences = @json($sentences);
+    let sentence = @json($sentence ?? []);
     let index = 0;
     let recordCount = 1;
 
-    // Set first sentence on load
-    document.getElementById('sentence-text').innerText = sentences[index] || "No sentences available";
+    console.log(sentence);
 
-    document.getElementById('record-btn').addEventListener('click', function () {
-        startRecording();
-    });
+    document.getElementById('sentence-text').innerText = sentence ? sentence.sentence : "No sentences available";
 
-    function startRecording() {
-        console.log("Recording started...");
+    // record start here
+    let mediaRecorder;
+    let audioChunks = [];
+    let isRecording = false;
+    let recordCounter = 0; // Tracks the current recording index
+    let recordedAudios = {}; // Stores recorded audio per index
+    let reRecordIndex = null; // Stores the index of the re-recorded audio
 
-        // Simulate recording process
-        setTimeout(() => {
-            console.log("Recording saved for: " + sentences[index]);
+    // Image paths
+    const micImg = "img/Component4.png";
+    const mic2Img = "img/Component 4.png";
+    const waveImg = "img/audio_wave.png";
 
-            // Update recording count
-            document.getElementById('record-count').innerText = recordCount;
+    const recordBtn = document.getElementById("record-btn");
+    const waveIndicator = document.createElement("img");
+    waveIndicator.src = waveImg;
+    waveIndicator.style.display = "none";
+    waveIndicator.style.marginLeft = "10px";
+    waveIndicator.style.width = "150px";
+    waveIndicator.style.height = "80px";
+    recordBtn.parentElement.appendChild(waveIndicator);
 
-            // Move to next sentence
-            index++;
-            recordCount++;
+    const recordingElements = document.querySelectorAll(".speak-content-number p");
 
-            if (index < sentences.length) {
-                document.getElementById('sentence-text').innerText = sentences[index];
-            } else {
-                document.getElementById('sentence-text').innerText = "No more sentences!";
+    function startRecording(index = null) {
+        navigator.mediaDevices.getUserMedia({ audio: true })
+            .then(stream => {
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+
+                mediaRecorder.ondataavailable = event => {
+                    audioChunks.push(event.data);
+                };
+
+                mediaRecorder.start();
+                isRecording = true;
+                recordBtn.src = mic2Img;
+                waveIndicator.style.display = "inline";
+
+                reRecordIndex = index !== null ? index : recordCounter;
+
+                console.log("Recording started...");
+            })
+            .catch(error => {
+                console.error("Error accessing microphone:", error);
+            });
+    }
+
+
+    function stopRecording() {
+        if (!mediaRecorder || !isRecording) {
+            console.error("No recording in progress.");
+            return;
+        }
+
+        mediaRecorder.onstop = () => {
+            const audioBlob = new Blob(audioChunks, { type: "audio/wav" });
+            const audioURL = URL.createObjectURL(audioBlob);
+            console.log("Audio recorded successfully:", audioBlob);
+
+            if (!recordedFiles) recordedFiles = {}; // Initialize if undefined
+            recordedFiles[reRecordIndex] = audioBlob;
+
+            // Ensure we're using the correct filename from the database
+            if (!currentReviewfilename) {
+                console.error("Error: No filename available from database.");
+                return;
             }
 
-        }, 3000); // Simulate a 3-second recording
+            fileNamesArray[reRecordIndex] = `${currentReviewfilename}.wav`;
+            fileUrlsArray[reRecordIndex] = audioURL;
+
+            updateRecordingDisplay(reRecordIndex);
+
+            if (reRecordIndex === recordCounter) {
+                recordCounter++;
+            }
+
+            // Load next sentence automatically
+            loadNextSentence();
+        };
+
+        mediaRecorder.stop();
+        isRecording = false;
+        recordBtn.src = micImg;
+        waveIndicator.style.display = "none";
     }
+
+    function updateRecordingDisplay(index) {
+        const recordingElement = recordingElements[index];
+
+        recordingElement.innerHTML = `
+        <i class="iconsax play-btn" icon-name="play-circle" style="font-size: 15px; cursor: pointer;"></i>
+        <i class="iconsax repeat-btn" icon-name="repeat" style="font-size: 15px; cursor: pointer;"></i>
+        <span class="active">${index + 1}</span>
+    `;
+
+        // Attach event listeners to play and repeat buttons
+        const playBtn = recordingElement.querySelector(".play-btn");
+        const repeatBtn = recordingElement.querySelector(".repeat-btn");
+
+        playBtn.addEventListener("click", () => playRecording(index));
+        repeatBtn.addEventListener("click", () => deleteRecording(index));
+    }
+
+    function playRecording(index) {
+        if (fileUrlsArray[index]) {
+            const audio = new Audio(fileUrlsArray[index]);
+            audio.play();
+        } else {
+            console.log("No recording available to play.");
+        }
+    }
+
+    function deleteRecording(index) {
+        if (recordedAudios[index]) {
+            delete recordedAudios[index]; // Remove the recorded audio
+            console.log(`Recording ${index + 1} deleted.`);
+
+            // Show the "Re-Record" button in place of the deleted recording
+            recordingElements[index].innerHTML = `
+            <button class="re-record-btn" style="cursor: pointer;">Re-Record</button>
+            <span class="active">${index + 1}</span>
+        `;
+
+            // Attach event listener to the re-record button
+            const reRecordBtn = recordingElements[index].querySelector(".re-record-btn");
+            reRecordBtn.addEventListener("click", () => {
+                startRecording(index);
+            });
+        }
+    }
+
+
+    // Event listener for the record button
+    recordBtn.addEventListener("click", () => {
+        if (isRecording) {
+            stopRecording();
+        } else {
+            startRecording();
+        }
+    });
+
+    let recordedFiles = [];
+    let sentencesArray = [];
+    let fileNamesArray = [];
+    let fileUrlsArray = [];
+
+    function submitRecordings() {
+        console.log('Submit clicked');
+        if (!currentReviewId) {
+            alert("No sentence available to submit.");
+            return;
+        }
+
+        // Get the selected language from the dropdown
+        const selectedLanguage = document.getElementById('selectlanguage').value;
+        let formData = new FormData();
+        formData.append("sentence_id", currentReviewId);
+        formData.append('language', selectedLanguage);
+
+        // Append each recording, its corresponding sentence, file name, and file URL (if available)
+        recordedFiles.forEach((file, index) => {
+            formData.append(`recordings[${index}]`, file);
+            formData.append(`sentences[${index}]`, sentencesArray[index] || '');
+            formData.append(`file_names[${index}]`, fileNamesArray[index] || '');
+            if (fileUrlsArray[index]) {
+                formData.append(`file_urls[${index}]`, fileUrlsArray[index]);
+            }
+        });
+
+        // Log FormData entries for debugging
+        formData.forEach((value, key) => {
+            console.log(key, value);
+        });
+
+
+        fetch('/save-recordings', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Response from server:', data.message);
+                location.reload();
+            })
+            .catch(error => console.error('Error saving recordings:', error));
+    }
+
+    // Attach the function to the submit button (only once)
+    document.getElementById('submitBtn').addEventListener('click', submitRecordings);
+
+
+
 </script>
 

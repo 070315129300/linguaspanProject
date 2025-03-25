@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('transcriptions', function (Blueprint $table) {
             $table->id();
             $table->integer('userId')->nullable();
+            $table->integer('write_id')->nullable();
+            $table->integer('speak_id')->nullable();
             $table->string('fileName')->nullable();
             $table->enum('type',['write','speak','listen','review'])->default('speak');
             $table->string('language')->nullable();

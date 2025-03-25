@@ -23,6 +23,7 @@ return new class extends Migration
             $table->decimal('review_score', 8, 2)->unsigned()->nullable();
             $table->boolean('flag')->default(false);
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+
             $table->timestamps();
         });
     }

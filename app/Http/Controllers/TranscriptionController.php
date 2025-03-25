@@ -39,10 +39,12 @@ class TranscriptionController extends Controller
     }
 
     // Review API
-    public function getReview()
-    {
-        return $this->transcriptionService->getAllReview();
-    }
+//    public function getReview()
+//    {
+//
+//        return $this->transcriptionService->getAllReview();
+//    }
+
 
 
     public function createReview(TranscriptionRequest $request)

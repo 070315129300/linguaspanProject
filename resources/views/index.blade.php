@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://iconsax.gitlab.io/i/icons.css" rel="stylesheet">
+    <link rel="icon" type="img/img" href="favicon.png">
+
 </head>
 <body>
 <section class="backgroundcolor" style=" background-image: url('{{ asset("img/WebHero.png") }}');">
@@ -360,9 +362,8 @@
             <div><img src="img/group.png" alt="" width="100%" height="100px"></div>
         </section>
     </main>
-@include("footer")
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="script.js"></script>
+<script src="js/script.js"></script>
 <script>
     // Bar Chart start her
     document.addEventListener("DOMContentLoaded", function () {

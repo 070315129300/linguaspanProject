@@ -22,4 +22,6 @@ class Transcription extends Model
         'updated_by_user_id',
         'status'
     ];
+
+
 }

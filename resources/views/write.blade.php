@@ -11,14 +11,14 @@
     </table>
 
     <div>
-        <select name="" id="">
-            <option value="">Language</option>
-            <option value="">English</option>
-            <option value="">Swahili</option>
-            <option value="">Yoruba</option>
-            <option value="">French</option>
-            <option value="">Igbo</option>
-            <option value="">Hausa</option>
+        <select name="language" id="selectlanguage">
+            <option value="english">Language</option>
+            <option value="english">English</option>
+            <option value="swahili">Swahili</option>
+            <option value="yoruba">Yoruba</option>
+            <option value="french">French</option>
+            <option value="igbo">Igbo</option>
+            <option value="hausa">Hausa</option>
         </select>
 
     </div>
@@ -149,12 +149,14 @@
             let domain = document.getElementById("domain").value;
             let citation = document.getElementById("citation").value.trim();
             let confirm = document.getElementById("confirm").checked;
+            let language = document.getElementById("selectlanguage").value;
             let type = "write";
 
-            if (!sentence || !domain || !citation || !confirm || !type) {
+            if (!sentence || !domain || !citation || !confirm || !language || !type ) {
                 alert("Please fill all fields and confirm the checkbox.");
                 return;
             }
+            console.log("language", language)
 
             // Simulate sending data (replace with actual database call)
             fetch("transcriptions", {
@@ -163,22 +165,32 @@
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
-                body: JSON.stringify({ sentence, domain, citation, type }),
+                body: JSON.stringify({ sentence, domain, citation, type, language  }),
             })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
                         successMessage.textContent = "Successfully uploaded!";
                         successMessage.style.color = "green";
+                        successMessage.style.display = "block";  // <-- Show message
                         sentenceInput.value = "";
-                        submitBtn.style.backgroundColor = ""; // Reset color after submit
+                        submitBtn.style.backgroundColor = "";
                         submitBtn.style.color = "";
+
+                        // Reload the page after 2 seconds
+                        setTimeout(() => {
+                            location.reload();
+                        }, 2000);
                     } else {
                         successMessage.textContent = "Upload failed. Try again.";
                         successMessage.style.color = "red";
+                        successMessage.style.display = "block";  // <-- Show message
+                        // Reload the page after 2 seconds
+                        setTimeout(() => {
+                            location.reload();
+                        }, 3000);
                     }
-                })
-                .catch(error => console.error("Error:", error));
+                });
         }
 
         // Attach event listener to submit button

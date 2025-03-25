@@ -26,26 +26,30 @@
         <div class="speak-content">
             <div class="speak-content-word">
                 <p class="speak-content-words-p">Press <i class="iconsax" icon-name="sound" style="font-size: 15px"></i> to listen & choose Yes/No to confirm if sentence was well read</p>
-                <p class="speak-content-word-p">The man went home <br>yesterday</p>
+                <p id="sentence-text" class="speak-content-word-p">Loading ...</p>
             </div>
             <div class="speak-content-number">
                 <p class="speak-content-number-listen"><i class="iconsax" icon-name="sound" style="font-size: 15px"></i> <span class="active"> 1</span></p>
-                <div class="number-list">
-                    <span>2</span>
-                    <span>3</span>
-                    <span>4</span>
-                    <span>5</span>
-                </div>
+                <p class="speak-content-number-listen"><i class="iconsax" icon-name="sound" style="font-size: 15px"></i> <span class="active"> 2</span></p>
+                <p class="speak-content-number-listen"><i class="iconsax" icon-name="sound" style="font-size: 15px"></i> <span class="active"> 3</span></p>
+                <p class="speak-content-number-listen"><i class="iconsax" icon-name="sound" style="font-size: 15px"></i> <span class="active"> 4</span></p>
+                <p class="speak-content-number-listen"><i class="iconsax" icon-name="sound" style="font-size: 15px"></i> <span class="active"> 5</span></p>
+
             </div>
         </div>
         <div  class="speak-content-mic1">
 
-            <p class="speak-content-mic2"><i class="iconsax" icon-name="tick-circle" style="font-size: 15px;color: green"></i> Yes </p>
+            <p class="speak-content-mic2" id="yesButton"><i class="iconsax" icon-name="tick-circle" style="font-size: 15px;color: green"></i> Yes </p>
+
             <button id="listenButton" style="border: none; background: none">
-                <img src="img/component5.png" alt="" width="100px important!" height= "100px important! ">
+                <img src="img/component5.png" alt="Play Audio" width="100px" height="100px">
             </button>
-            <p class="speak-content-mic2"><i class="iconsax" icon-name="x-circle" style="font-size: 15px;color: red"></i> No </p>
+            <p class="speak-content-mic2" id="noButton"><i class="iconsax" icon-name="x-circle" style="font-size: 15px;color: red"></i> No </p>
         </div>
+
+    <button id="record-btn">
+        <img src="img/Component4.png" alt="Record">
+    </button>
 
 
         <div>
@@ -68,211 +72,258 @@
 
 
 @include('footer')
+
+
 <script>
 
-    document.addEventListener("DOMContentLoaded", function () {
-        let currentIndex = 0;
-        const totalSentences = 5;
-        let responses = {};
-        let audioFiles = @json($fileList);
-        let currentBatch = audioFiles.slice(0, totalSentences);
-        let batchStartIndex = 0;
+        let currentReviewId = null;
+        let currentAudioUrl = null;
+        let mediaRecorder;
+        let audioChunks = [];
+        let isRecording = false;
+        let recordCounter = 0;
+        let recordedAudios = {};
+        let responses = {}; // Stores Yes/No responses for each recording
 
-        const listenButton = document.getElementById("listenButton");
-        const listenImage = listenButton.querySelector("img");
-        const yesButton = document.querySelector(".speak-content-mic2 i[icon-name='tick-circle']").closest("p");
-        const noButton = document.querySelector(".speak-content-mic2 i[icon-name='x-circle']").closest("p");
-        const numberList = document.querySelector(".number-list").querySelectorAll("span");
-        const activeNumberContainer = document.querySelector(".speak-content-number-listen");
-        const activeNumber = activeNumberContainer.querySelector("span");
+        // Image paths
+        const micImg = "img/Component4.png";
+        const mic2Img = "img/Component 4.png";
+        const waveImg = "img/audio_wave.png";
 
-        listenButton.addEventListener("click", function () {
-            if (currentIndex < totalSentences) {
-                playAudio(currentIndex);
+        const recordBtn = document.getElementById("record-btn");
+        const waveIndicator = document.createElement("img");
+        waveIndicator.src = waveImg;
+        waveIndicator.style.display = "none";
+        waveIndicator.style.marginLeft = "10px";
+        waveIndicator.style.width = "150px";
+        waveIndicator.style.height = "80px";
+        recordBtn.parentElement.appendChild(waveIndicator);
+
+        // Fetch sentence & audio
+        function loadNextSentence() {
+        const selectedLanguage = document.getElementById('selectlanguage').value;
+
+        fetch(`/getnextlisten?language=${selectedLanguage}`)
+        .then(response => response.json())
+        .then(data => {
+        if (data.message === 'Not available') {
+        document.getElementById('sentence-text').innerText = 'Not available';
+        currentAudioUrl = null;
+    } else {
+        document.getElementById('sentence-text').innerText = data.sentence.sentence;
+        currentReviewId = data.sentence.id;
+        currentAudioUrl = data.fileUrl;
+    }
+    })
+        .catch(error => console.error('Error:', error));
+    }
+
+        // Play original sentence audio
+        document.getElementById('listenButton').addEventListener('click', function () {
+        if (currentAudioUrl) {
+        let audio = new Audio(currentAudioUrl);
+        audio.play();
+    } else {
+        alert("No audio available.");
+    }
+    });
+
+        // Start recording
+        function startRecording() {
+        navigator.mediaDevices.getUserMedia({ audio: true })
+            .then(stream => {
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+
+                mediaRecorder.ondataavailable = event => {
+                    audioChunks.push(event.data);
+                };
+
+                mediaRecorder.start();
+                isRecording = true;
+                recordBtn.src = mic2Img;
+                waveIndicator.style.display = "inline";
+
+                console.log("Recording started...");
+            })
+            .catch(error => {
+                console.error("Error accessing microphone:", error);
+            });
+    }
+
+        // Stop recording and save audio
+        function stopRecording() {
+        if (mediaRecorder && isRecording) {
+        mediaRecorder.onstop = () => {
+        const audioBlob = new Blob(audioChunks, { type: "audio/wav" });
+        const audioURL = URL.createObjectURL(audioBlob);
+
+        recordedAudios[recordCounter] = audioURL;
+        updateRecordingDisplay(recordCounter);
+        recordCounter++; // Move to next recording slot
+    };
+
+        mediaRecorder.stop();
+        isRecording = false;
+        recordBtn.src = micImg;
+        waveIndicator.style.display = "none";
+    }
+    }
+
+        // Update UI with recorded audio
+        function updateRecordingDisplay(index) {
+        const recordingContainer = document.querySelector(".speak-content-number");
+
+        const newRecording = document.createElement("p");
+        newRecording.classList.add("speak-content-number-listen");
+        newRecording.innerHTML = `<i class="iconsax" icon-name="sound" style="font-size: 15px"></i>
+                                  <span class="active">${index + 1}</span>`;
+        newRecording.addEventListener("click", () => playRecording(index));
+
+        recordingContainer.appendChild(newRecording);
+    }
+
+        // Play recorded audio
+        function playRecording(index) {
+        if (recordedAudios[index]) {
+        const audio = new Audio(recordedAudios[index]);
+        audio.play();
+    } else {
+        console.log("No recording available.");
+    }
+    }
+
+        // Save Yes/No response and attach icon
+        function saveResponse(response) {
+        responses[recordCounter - 1] = response;
+
+        let iconHTML = `<i class='iconsax' icon-name='${response === "yes" ? "tick-circle" : "x-circle"}'
+                        style='font-size: 15px; color: ${response === "yes" ? "green" : "red"}'></i>`;
+
+        const responseContainer = document.querySelector(".speak-content-mic2:last-of-type");
+        responseContainer.innerHTML = `${iconHTML} ${response === "yes" ? "Yes" : "No"}`;
+    }
+
+        // Attach event listeners
+        document.getElementById('yesButton').addEventListener('click', () => saveResponse("yes"));
+        document.getElementById('noButton').addEventListener('click', () => saveResponse("no"));
+        document.getElementById('selectlanguage').addEventListener('change', loadNextSentence);
+
+        let recordedFiles = [];
+        let sentencesArray = [];
+        let fileNamesArray = [];
+        let fileUrlsArray = [];
+        let playbackOrder = []; // Stores the order in which audio files are played
+        let responsesArray = []; // Stores user responses (Yes/No) for each recording
+
+        // Function to play recording and track order
+        function playRecording(index) {
+            if (recordedAudios[index]) {
+                const audio = new Audio(recordedAudios[index]);
+                audio.play();
+
+                // Track playback order only if it's not already recorded
+                if (!playbackOrder.includes(index)) {
+                    playbackOrder.push(index);
+                }
+
+                console.log("Playback order:", playbackOrder);
+            } else {
+                console.log("No recording available to play.");
             }
-        });
-
-        function playAudio(index) {
-            listenImage.src = "img/component4.png";
-            let audio = new Audio(currentBatch[index].url);
-            audio.play();
-
-            let waveContainer = document.createElement("div");
-            waveContainer.id = "waveContainer";
-            waveContainer.innerHTML = '<img src="img/audio_wave.png" style="width: 100px;">';
-            listenButton.parentNode.insertBefore(waveContainer, listenButton.nextSibling);
-
-            audio.onended = function () {
-                waveContainer.remove();
-                listenImage.src = "img/component5.png";
-            };
         }
 
-        yesButton.addEventListener("click", function () {
-            if (currentIndex < totalSentences) {
-                saveResponse(currentIndex, "yes");
-                updateUI();
-            }
-        });
+        // Function to delete recording
+        function deleteRecording(index) {
+            if (recordedAudios[index]) {
+                delete recordedAudios[index];
+                console.log(`Recording ${index + 1} deleted.`);
 
-        noButton.addEventListener("click", function () {
-            if (currentIndex < totalSentences) {
-                saveResponse(currentIndex, "no");
-                updateUI();
-            }
-        });
+                // Remove from playback order if it was recorded
+                playbackOrder = playbackOrder.filter(i => i !== index);
+                responsesArray[index] = null; // Remove the associated response
 
+                recordingElements[index].innerHTML = `
+            <button class="re-record-btn" style="cursor: pointer;">Re-Record</button>
+            <span class="active">${index + 1}</span>
+        `;
+
+                // Attach event listener to re-record button
+                const reRecordBtn = recordingElements[index].querySelector(".re-record-btn");
+                reRecordBtn.addEventListener("click", () => {
+                    startRecording(index);
+                });
+            }
+        }
+
+        // Function to save user response (Yes/No)
         function saveResponse(index, response) {
             let iconHTML = `<i class='iconsax' icon-name='${response === "yes" ? "tick-circle" : "x-circle"}'
-            style='font-size: 15px; color: ${response === "yes" ? "green" : "red"}'></i>`;
+        style='font-size: 15px; color: ${response === "yes" ? "green" : "red"}'></i> ${response === "yes" ? "Yes" : "No"}`;
 
-            responses[currentBatch[index].name] = response;
+            // Store the response
+            responsesArray[index] = response;
 
-            if (index === 0) {
-                // First response goes in the <p> tag
-                activeNumber.innerHTML = iconHTML;
-            } else {
-                // Subsequent responses go inside the respective <span>
-                numberList[index - 1].innerHTML = iconHTML;
-            }
+            // Update the UI with the response
+            document.querySelector(`.speak-content-number p:nth-child(${index + 1})`).innerHTML = iconHTML;
         }
 
-        function updateUI() {
-            currentIndex++;
+        // Event listeners for Yes/No buttons
+        document.querySelectorAll('.speak-content-mic2').forEach((element, index) => {
+            element.addEventListener("click", function () {
+                let response = element.textContent.trim().toLowerCase();
+                saveResponse(index, response);
+            });
+        });
 
-            if (currentIndex < totalSentences) {
-                // Move the next number to the active <p> tag
-                activeNumber.innerHTML = numberList[currentIndex - 1].innerHTML;
-                numberList[currentIndex - 1].style.display = "none";
-            } else {
-                sendResponsesToBackend();
+        // Function to submit recordings
+        function submitRecordings() {
+            console.log('Submit clicked');
+            if (!currentReviewId) {
+                alert("No sentence available to submit.");
+                return;
             }
-        }
 
-        function sendResponsesToBackend() {
-            fetch("/save-responses", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ responses })
+            const selectedLanguage = document.getElementById('selectlanguage').value;
+            let formData = new FormData();
+            formData.append("sentence_id", currentReviewId);
+            formData.append('language', selectedLanguage);
+
+            // Append recordings, sentences, file names, file URLs, responses, and playback order
+            recordedFiles.forEach((file, index) => {
+                formData.append(`recordings[${index}]`, file);
+                formData.append(`sentences[${index}]`, sentencesArray[index] || '');
+                formData.append(`file_names[${index}]`, fileNamesArray[index] || '');
+                formData.append(`file_urls[${index}]`, fileUrlsArray[index] || '');
+                formData.append(`responses[${index}]`, responsesArray[index] || ''); // Save Yes/No response
+            });
+
+            // Append playback order
+            formData.append("playback_order", JSON.stringify(playbackOrder));
+
+            // Debugging
+            formData.forEach((value, key) => {
+                console.log(key, value);
+            });
+
+            fetch('/save-listening', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
             })
                 .then(response => response.json())
                 .then(data => {
-                    console.log("Responses saved successfully:", data);
-                    loadNextBatch();
+                    console.log('Response from server:', data.message);
+                    location.reload();
                 })
-                .catch(error => console.error("Error saving responses:", error));
+                .catch(error => console.error('Error saving recordings:', error));
         }
 
-        function loadNextBatch() {
-            batchStartIndex += totalSentences;
-            currentBatch = audioFiles.slice(batchStartIndex, batchStartIndex + totalSentences);
-            currentIndex = 0;
-            responses = {};
-
-            // Reset number list UI
-            numberList.forEach((span, index) => {
-                span.innerHTML = index + 2;
-                span.style.display = "inline-block"; // Show again
-            });
-
-            activeNumber.innerHTML = "1"; // Reset active number
-            activeNumber.style.display = "inline-block"; // Make sure it's visible
-
-            if (currentBatch.length === 0) {
-                console.log("No more audio files to process.");
-            }
-        }
-    });
-
-    {{--document.addEventListener("DOMContentLoaded", function () {--}}
-    {{--    let currentIndex = 0;--}}
-    {{--    const totalSentences = 5;--}}
-    {{--    let responses = {};--}}
-    {{--    let audioFiles = @json($fileList);--}}
-    {{--    let currentBatch = audioFiles.slice(0, totalSentences); // Get the first 5--}}
-    {{--    let batchStartIndex = 0;--}}
-
-    {{--    const listenButton = document.getElementById("listenButton");--}}
-    {{--    const listenImage = listenButton.querySelector("img");--}}
-    {{--    const yesButton = document.querySelector(".speak-content-mic2 i[icon-name='tick-circle']").closest("p");--}}
-    {{--    const noButton = document.querySelector(".speak-content-mic2 i[icon-name='x-circle']").closest("p");--}}
-    {{--    const numberList = document.querySelector(".speak-content-number-listen span");--}}
-    {{--    let speakContent = document.querySelector(".speak-content");--}}
-
-    {{--    listenButton.addEventListener("click", function () {--}}
-    {{--        if (currentIndex < totalSentences) {--}}
-    {{--            playAudio(currentIndex);--}}
-    {{--        }--}}
-    {{--    });--}}
-
-    {{--    function playAudio(index) {--}}
-    {{--        listenImage.src = "img/component4.png";--}}
-    {{--        let audio = new Audio(currentBatch[index].url);--}}
-    {{--        audio.play();--}}
-
-    {{--        let waveContainer = document.createElement("div");--}}
-    {{--        waveContainer.id = "waveContainer";--}}
-    {{--        waveContainer.innerHTML = '<img src="img/audio_wave.png" style="width: 100px;">';--}}
-    {{--        speakContent.parentNode.insertBefore(waveContainer, speakContent.nextSibling);--}}
-
-    {{--        audio.onended = function () {--}}
-    {{--            waveContainer.remove();--}}
-    {{--            listenImage.src = "img/component5.png";--}}
-    {{--        };--}}
-    {{--    }--}}
-
-    {{--    yesButton.addEventListener("click", function () {--}}
-    {{--        if (currentIndex < totalSentences) {--}}
-    {{--            saveResponse(currentIndex, "yes");--}}
-    {{--            updateUI();--}}
-    {{--        }--}}
-    {{--    });--}}
-
-    {{--    noButton.addEventListener("click", function () {--}}
-    {{--        if (currentIndex < totalSentences) {--}}
-    {{--            saveResponse(currentIndex, "no");--}}
-    {{--            updateUI();--}}
-    {{--        }--}}
-    {{--    });--}}
-
-    {{--    function saveResponse(index, response) {--}}
-    {{--        responses[currentBatch[index].name] = response;--}}
-    {{--        numberList.innerHTML += `<i class='iconsax' icon-name='${response === "yes" ? "tick-circle" : "x-circle"}' style='font-size: 15px; color: ${response === "yes" ? "green" : "red"}'></i>`;--}}
-    {{--    }--}}
-
-    {{--    function updateUI() {--}}
-    {{--        currentIndex++;--}}
-    {{--        if (currentIndex >= totalSentences) {--}}
-    {{--            sendResponsesToBackend();--}}
-    {{--        }--}}
-    {{--    }--}}
-
-    {{--    function sendResponsesToBackend() {--}}
-    {{--        fetch("/save-responses", {--}}
-    {{--            method: "POST",--}}
-    {{--            headers: { "Content-Type": "application/json" },--}}
-    {{--            body: JSON.stringify({ responses })--}}
-    {{--        })--}}
-    {{--            .then(response => response.json())--}}
-    {{--            .then(data => {--}}
-    {{--                console.log("Responses saved successfully:", data);--}}
-    {{--                loadNextBatch();--}}
-    {{--            })--}}
-    {{--            .catch(error => console.error("Error saving responses:", error));--}}
-    {{--    }--}}
-
-    {{--    function loadNextBatch() {--}}
-    {{--        batchStartIndex += totalSentences;--}}
-    {{--        currentBatch = audioFiles.slice(batchStartIndex, batchStartIndex + totalSentences);--}}
-    {{--        currentIndex = 0;--}}
-    {{--        responses = {};--}}
-    {{--        numberList.innerHTML = ""; // Reset UI indicators--}}
-
-    {{--        if (currentBatch.length === 0) {--}}
-    {{--            console.log("No more audio files to process.");--}}
-    {{--        }--}}
-    {{--    }--}}
-    {{--});--}}
-
+        // Attach submit function
+        document.getElementById('submitBtn').addEventListener('click', submitRecordings);
 </script>
+
+
 

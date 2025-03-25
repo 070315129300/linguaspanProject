@@ -356,8 +356,8 @@ class PagesController extends Controller
             Transcription::create([
                 'user_id'   => auth()->id(),
                 'language'  => $language,
-                'file_name' => $fileName,
-                'file_url'  => $objectUrl,
+                'fileName' => $fileName,
+                'fileurl'  => $objectUrl,
                 'sentence'  => $sentence,
                 'status'    => '0',
             ]);
@@ -385,11 +385,11 @@ class PagesController extends Controller
 
 
                     // ✅ Check if the file exists in the Write table
-                    $fileRecord = Write::where('file_path', $objectUrl)
+                    $fileRecord = Transcription::where('file_path', $objectUrl)
 
 
                         ->where(function ($query) {
-                            $query->whereNull('status')->orWhere('status', 'pending');
+                            $query->whereNull('status')->orWhere('status', '');
                         })
 
                         ->where(function ($query) {

@@ -234,10 +234,6 @@
         }
     });
 
-    // let recordedFiles = [];
-    // let sentencesArray = [];
-    // let fileNamesArray = [];
-    // let fileUrlsArray = [];
 
     let recordedFiles = {};
     let sentencesArray = {};

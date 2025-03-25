@@ -47,9 +47,6 @@
             <p class="speak-content-mic2" id="noButton"><i class="iconsax" icon-name="x-circle" style="font-size: 15px;color: red"></i> No </p>
         </div>
 
-    <button id="record-btn">
-        <img src="img/Component4.png" alt="Record">
-    </button>
 
 
         <div>

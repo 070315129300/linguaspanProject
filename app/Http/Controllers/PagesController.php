@@ -385,15 +385,11 @@ class PagesController extends Controller
 
 
                     // ✅ Check if the file exists in the Write table
-                    $fileRecord = Transcription::where('file_path', $objectUrl)
+                    $fileRecord = Transcription::where('fileurl', $objectUrl)
 
 
                         ->where(function ($query) {
-                            $query->whereNull('status')->orWhere('status', '');
-                        })
-
-                        ->where(function ($query) {
-                            $query->whereNull('transcribe')->orWhere('transcribe', 0);
+                            $query->whereNull('status')->orWhere('status', '0');
                         })
                         ->first();
 

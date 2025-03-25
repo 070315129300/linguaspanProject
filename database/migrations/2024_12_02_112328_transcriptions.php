@@ -17,6 +17,7 @@ return new class extends Migration
             $table->integer('write_id')->nullable();
             $table->integer('speak_id')->nullable();
             $table->string('fileName')->nullable();
+            $table->string('fileurl')->nullable();
             $table->enum('type',['write','speak','listen','review'])->default('speak');
             $table->string('language')->nullable();
             $table->string('quality')->nullable();

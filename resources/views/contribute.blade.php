@@ -92,32 +92,11 @@
     // Reload sentences when language changes
     document.getElementById('selectlanguage').addEventListener('change', loadNextSentence);
 
-    // function loadNextSentence() {
-    //     const selectedLanguage = document.getElementById('selectlanguage').value;
-    //
-    //     fetch(`/getnextcontribute?language=${selectedLanguage}`)
-    //         .then(response => response.json())
-    //         .then(data => {
-    //             if (data.message === 'Not available') {
-    //                 document.getElementById('sentence-text').innerText = 'Not available';
-    //             } else if (data.source === 'database') {
-    //                 // Load from database
-    //                 document.getElementById('sentence-text').innerText = data.sentence.sentence;
-    //                 currentReviewId = data.sentence.id;
-    //                 currentReviewfilename = data.sentence.file_name;
-    //             } else if (data.source === 's3') {
-    //                 // Load from S3 bucket
-    //                 document.getElementById('sentence-text').innerText = data.fileContent;
-    //                 currentReviewfilename = data.randomS3File;
-    //             }
-    //         })
-    //         .catch(error => console.error('Error:', error));
-    // }
-    // // Reload sentences when language changes
-    // document.getElementById('selectlanguage').addEventListener('change', loadNextSentence);
+
 
     // Fetch sentences from PHP and convert to JavaScript array
     let sentence = @json($sentence ?? []);
+
     let index = 0;
     let recordCount = 1;
 
@@ -179,34 +158,21 @@
             console.error("No recording in progress.");
             return;
         }
-
         mediaRecorder.onstop = () => {
             const audioBlob = new Blob(audioChunks, { type: "audio/wav" });
             const audioURL = URL.createObjectURL(audioBlob);
-            console.log("Audio recorded successfully:", audioBlob);
-
-            if (!recordedFiles) recordedFiles = {}; // Initialize if undefined
-            recordedFiles[reRecordIndex] = audioBlob;
-
-            // Ensure we're using the correct filename from the database
-            if (!currentReviewfilename) {
-                console.error("Error: No filename available from database.");
-                return;
-            }
-
-            fileNamesArray[reRecordIndex] = `${currentReviewfilename}.wav`;
+            console.log("Audio recorded successfully:", audioURL);
+            recordedAudios[reRecordIndex] = audioBlob;
+            recordedFiles[reRecordIndex] = audioBlob; // Add this line
             fileUrlsArray[reRecordIndex] = audioURL;
-
+            sentencesArray[reRecordIndex] = document.getElementById('sentence-text').innerText;
+            fileNamesArray[reRecordIndex] = currentReviewfilename;
             updateRecordingDisplay(reRecordIndex);
-
             if (reRecordIndex === recordCounter) {
                 recordCounter++;
             }
-
-            // Load next sentence automatically
-            loadNextSentence();
+            loadNextSentence(); // Automatically load the next sentence
         };
-
         mediaRecorder.stop();
         isRecording = false;
         recordBtn.src = micImg;
@@ -222,26 +188,29 @@
         <span class="active">${index + 1}</span>
     `;
 
-        // Attach event listeners to play and repeat buttons
-        const playBtn = recordingElement.querySelector(".play-btn");
-        const repeatBtn = recordingElement.querySelector(".repeat-btn");
+        setTimeout(() => { // Ensure the buttons are added before attaching event listeners
+            const playBtn = recordingElement.querySelector(".play-btn");
+            const repeatBtn = recordingElement.querySelector(".repeat-btn");
 
-        playBtn.addEventListener("click", () => playRecording(index));
-        repeatBtn.addEventListener("click", () => deleteRecording(index));
+            playBtn.addEventListener("click", () => playRecording(index));
+            repeatBtn.addEventListener("click", () => deleteRecording(index));
+        }, 100);
     }
-
     function playRecording(index) {
         if (fileUrlsArray[index]) {
+            console.log("Playing audio from:", fileUrlsArray[index]);
             const audio = new Audio(fileUrlsArray[index]);
-            audio.play();
+            audio.play().catch(error => console.error("Audio playback error:", error));
         } else {
-            console.log("No recording available to play.");
+            console.log(`No recording available to play at index ${index}`);
         }
     }
-
     function deleteRecording(index) {
         if (recordedAudios[index]) {
-            delete recordedAudios[index]; // Remove the recorded audio
+            delete recordedAudios[index];  // Remove recorded audio
+            delete fileUrlsArray[index];   // Remove audio URL
+            delete recordedFiles[index];   // Remove recorded file
+
             console.log(`Recording ${index + 1} deleted.`);
 
             // Show the "Re-Record" button in place of the deleted recording
@@ -252,12 +221,9 @@
 
             // Attach event listener to the re-record button
             const reRecordBtn = recordingElements[index].querySelector(".re-record-btn");
-            reRecordBtn.addEventListener("click", () => {
-                startRecording(index);
-            });
+            reRecordBtn.addEventListener("click", () => startRecording(index));
         }
     }
-
 
     // Event listener for the record button
     recordBtn.addEventListener("click", () => {
@@ -268,39 +234,43 @@
         }
     });
 
-    let recordedFiles = [];
-    let sentencesArray = [];
-    let fileNamesArray = [];
-    let fileUrlsArray = [];
+    // let recordedFiles = [];
+    // let sentencesArray = [];
+    // let fileNamesArray = [];
+    // let fileUrlsArray = [];
+
+    let recordedFiles = {};
+    let sentencesArray = {};
+    let fileNamesArray = {};
+    let fileUrlsArray = {};
+
 
     function submitRecordings() {
-        console.log('Submit clicked');
-        if (!currentReviewId) {
-            alert("No sentence available to submit.");
+        const selectedLanguage = document.getElementById('selectlanguage').value;
+        const recordedFilesArray = Object.values(recordedFiles);
+
+        if (recordedFilesArray.length === 0) {
+            console.error("No recorded files available!");
             return;
         }
 
-        // Get the selected language from the dropdown
-        const selectedLanguage = document.getElementById('selectlanguage').value;
         let formData = new FormData();
-        formData.append("sentence_id", currentReviewId);
+        formData.append("file_name", currentReviewfilename);
         formData.append('language', selectedLanguage);
 
-        // Append each recording, its corresponding sentence, file name, and file URL (if available)
-        recordedFiles.forEach((file, index) => {
-            formData.append(`recordings[${index}]`, file);
-            formData.append(`sentences[${index}]`, sentencesArray[index] || '');
-            formData.append(`file_names[${index}]`, fileNamesArray[index] || '');
+        Object.keys(recordedFiles).forEach(index => {
+            formData.append(`recordings[]`, recordedFiles[index]);
+            formData.append(`sentences[]`, sentencesArray[index] || '');
+            formData.append(`file_names[]`, fileNamesArray[index] || '');
             if (fileUrlsArray[index]) {
-                formData.append(`file_urls[${index}]`, fileUrlsArray[index]);
+                formData.append(`file_urls[]`, fileUrlsArray[index]);
             }
         });
 
-        // Log FormData entries for debugging
-        formData.forEach((value, key) => {
-            console.log(key, value);
-        });
-
+        console.log("FormData before sending:");
+        for (let pair of formData.entries()) {
+            console.log(pair[0], pair[1]);
+        }
 
         fetch('/save-recordings', {
             method: 'POST',
@@ -309,13 +279,27 @@
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             }
         })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Response from server:', data.message);
-                location.reload();
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
             })
-            .catch(error => console.error('Error saving recordings:', error));
+            .then(data => {
+                console.log("Server Response:", data);
+                // Show success message (optional)
+                alert('Recordings saved successfully!');
+                // Reload the page after a short delay
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000); // 1 second delay
+            })
+            .catch(error => {
+                console.error("Error submitting:", error);
+                alert('Error saving recordings: ' + error.message);
+            });
     }
+
 
     // Attach the function to the submit button (only once)
     document.getElementById('submitBtn').addEventListener('click', submitRecordings);
@@ -323,4 +307,6 @@
 
 
 </script>
+
+
 

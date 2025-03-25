@@ -258,7 +258,7 @@ class PagesController extends Controller
         // ✅ Fetch from S3 (only if a language is selected)
         try {
             if ($language) {
-                $bucketName = strtolower($language) === 'yoruba' ? 'transcribedfile' : 'transcribedfile';
+                $bucketName = 'transcribedfile'; // Same bucket for now
                 $s3Path = strtolower($language) === 'yoruba' ? '' : "{$language}/reviews/";
                 $region = env('AWS_DEFAULT_REGION', 'eu-central-1');
 
@@ -294,7 +294,7 @@ class PagesController extends Controller
                         'Bucket' => $bucketName,
                         'Key'    => $randomS3File,
                     ]);
-                    $fileContent = $result['Body']->getContents();
+                    $fileContent = trim($result['Body']->getContents());
 
                     // ✅ Get the file URL
                     $fileUrl = $s3Client->getObjectUrl($bucketName, $randomS3File);
@@ -302,147 +302,65 @@ class PagesController extends Controller
             }
         } catch (\Exception $e) {
             \Log::error("S3 Fetch Error: " . $e->getMessage());
-            $randomS3File = null;
-            $fileContent = null;
-            $fileUrl = null;
+            return response()->json(['message' => 'Error fetching sentence'], 500);
         }
 
-        // ✅ Return response with only S3 data
+        // ✅ Return structured response
         if (!$randomS3File) {
             return response()->json(['message' => 'Not available'], 404);
         }
 
         return response()->json([
-            'randomS3File' => $randomS3File,
-            'fileContent'  => $fileContent,
-            'fileUrl'      => $fileUrl,
+            'message' => 'Success',
+            'sentence' => [
+                'id'        => uniqid(),
+                'sentence'  => $fileContent,
+                'file_name' => $randomS3File,
+            ],
+            'fileUrl' => $fileUrl,
         ]);
     }
 
 
-//
-//    public function getnextcontribute(Request $request)
-//    {
-//        $language = $request->query('language');
-//
-//        // Fetch from the database first
-//        $query = Write::whereNull('status')->orWhere('status', 'pending');
-//        if ($language) {
-//            $query->where('language', $language);
-//        }
-//        $sentence = $query->inRandomOrder()->first();
-//
-//        if ($sentence) {
-//            return response()->json([
-//                'sentence' => $sentence,
-//                'source'   => 'database',
-//            ]);
-//        }
-//
-//        // If no sentence is found, fetch from S3
-//        try {
-//            $bucketName = 'transcribedfile';
-//            $s3Path = $language ? "{$language}/reviews/" : '';
-//
-//            $s3Client = new S3Client([
-//                'region'      => env('AWS_DEFAULT_REGION', 'eu-central-1'),
-//                'version'     => 'latest',
-//                'credentials' => [
-//                    'key'    => env('AWS_ACCESS_KEY_ID'),
-//                    'secret' => env('AWS_SECRET_ACCESS_KEY'),
-//                ],
-//            ]);
-//
-//            // Fetch files from S3
-//            $objects = $s3Client->listObjects([
-//                'Bucket' => $bucketName,
-//                'Prefix' => $s3Path,
-//            ]);
-//
-//            $s3Files = [];
-//            if (!empty($objects['Contents'])) {
-//                foreach ($objects['Contents'] as $object) {
-//                    $s3Files[] = $object['Key'];
-//                }
-//            }
-//
-//            if (!empty($s3Files)) {
-//                $randomS3File = $s3Files[array_rand($s3Files)];
-//
-//                $result = $s3Client->getObject([
-//                    'Bucket' => $bucketName,
-//                    'Key'    => $randomS3File,
-//                ]);
-//                $fileContent = $result['Body']->getContents();
-//
-//            var_dump($fileContent);
-//
-//                return response()->json([
-//                    'randomS3File' => $randomS3File,
-//                    'fileContent'   => $fileContent,
-//                    'source'        => 's3',
-//                ]);
-//            }
-//        } catch (\Exception $e) {
-//            Log::error("S3 Fetch Error: " . $e->getMessage());
-//        }
-//
-//        return response()->json(['message' => 'Not available'], 404);
-//    }
 
     public function saverecordings(Request $request)
     {
-        $language    = $request->input('language');
-        $recordings  = $request->file('recordings');
-        $sentences   = $request->input('sentences');
-        $fileNames   = $request->input('file_names', []);
-        $sentenceIds = $request->input('sentence_id', []); // Ensure it's an array
+        $language   = $request->input('language');
+        $recordings = $request->file('recordings', []); // Ensure it's an array
+        $sentences  = $request->input('sentences', []);
+        $fileNames  = $request->input('file_names', []);
+
+
+        if (empty($recordings)) {
+            return response()->json(['error' => 'No recordings uploaded'], 400);
+        }
 
         $bucketName = 'transcribedfile';
-        $s3Path = "{$language}/all_audio/";
-        $region = env('AWS_DEFAULT_REGION', 'eu-central-1'); // Update region if necessary
+        $s3Path     = "{$language}/all_audio/";
+        $region     = env('AWS_DEFAULT_REGION', 'eu-central-1');
 
         foreach ($recordings as $index => $file) {
+            if (!$file) continue; // Skip invalid files
+
             $sentence = $sentences[$index] ?? null;
-
-            // ✅ Generate a file name
-            $fileName = isset($fileNames[$index]) && !empty($fileNames[$index])
-                ? $fileNames[$index]
-                : 'audio_' . time() . '_' . $index . '.wav';
-
+            $fileName = $fileNames[$index] ?? 'audio_' . time() . '_' . $index . '.wav';
             $filePath = $s3Path . $fileName;
 
-            // ✅ Upload to S3
+            // Upload to S3
             Storage::disk('s3')->put($filePath, file_get_contents($file), 'public');
 
-            // ✅ Generate the Object URL (Permanent URL)
+            // Generate S3 URL
             $objectUrl = "https://{$bucketName}.s3.{$region}.amazonaws.com/{$filePath}";
 
-            // ✅ Get the sentenceId for the corresponding recording
-            $sentenceId = $sentenceIds[$index] ?? null;
-
-            if ($sentenceId) {
-                // ✅ Update existing record
-                $existingRecord = Write::find($sentenceId);
-                if ($existingRecord) {
-                    $existingRecord->update([
-                        'sentence'    => $sentence,
-                        'file_name'   => $fileName,
-                        'file_path'   => $objectUrl, // ✅ Save the Object URL
-                        'transcribed' => '0',
-                    ]);
-                }
-            } else {
-                // ✅ Create new record
-                Write::create([
-                    'user_id'     => auth()->id(),
-                    'language'    => $language,
-                    'file_name'   => $fileName,
-                    'file_path'   => $objectUrl, // ✅ Save the Object URL
-                    'sentence'    => $sentence,
-                    'transcribed' => '0',
-                ]);
-            }
+            // Save to database
+            Transcription::create([
+                'user_id'   => auth()->id(),
+                'language'  => $language,
+                'file_name' => $fileName,
+                'file_url'  => $objectUrl,
+                'sentence'  => $sentence,
+                'status'    => '0',
+            ]);
         }
 
         return response()->json(['message' => 'Recordings saved successfully']);

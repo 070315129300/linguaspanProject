@@ -152,44 +152,58 @@
             let language = document.getElementById("selectlanguage").value;
             let type = "write";
 
-            if (!sentence || !domain || !citation || !confirm || !language || !type ) {
+            if (!sentence || !domain || !citation || !confirm || !language || !type) {
                 alert("Please fill all fields and confirm the checkbox.");
                 return;
             }
-            console.log("language", language)
 
-            // Simulate sending data (replace with actual database call)
+            // Show loading state (optional)
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Submitting...";
+
             fetch("transcriptions", {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
-                body: JSON.stringify({ sentence, domain, citation, type, language  }),
+                body: JSON.stringify({ sentence, domain, citation, type, language }),
             })
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     if (data.success) {
-                        successMessage.textContent = "Successfully uploaded!";
-                        successMessage.style.color = "green";
-                        successMessage.style.display = "block";  // <-- Show message
+                        alert("Successfully uploaded!");
+                        // Clear form
                         sentenceInput.value = "";
                         submitBtn.style.backgroundColor = "";
                         submitBtn.style.color = "";
+                        document.getElementById("confirm").checked = false;
 
-                        // Reload the page after 2 seconds
+                        // Reload the page after 1 second
                         setTimeout(() => {
-                            location.reload();
-                        }, 2000);
+                            window.location.reload();
+                        }, 1000);
                     } else {
-                        successMessage.textContent = "Upload failed. Try again.";
-                        successMessage.style.color = "red";
-                        successMessage.style.display = "block";  // <-- Show message
-                        // Reload the page after 2 seconds
-                        setTimeout(() => {
-                            location.reload();
-                        }, 3000);
+                        throw new Error(data.message || "Upload failed");
                     }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    alert("Error: " + error.message);
+                    // Reload the page after 3 seconds
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 3000);
+                })
+                .finally(() => {
+                    // Reset button state
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = "Submit";
                 });
         }
 

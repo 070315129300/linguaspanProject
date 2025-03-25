@@ -43,19 +43,6 @@ class TranscriptionService
 
             $fileName = "file_{$nextFileNumber}.txt";
 
-            // Create Transcription
-            $transcription = Transcription::create([
-                'user_id' => $data['user_id'] ?? null,
-                'language' => $language,
-                'type' => $data['type'] ?? null,
-                'file_name' => $fileName,
-                'file_path' => "" ?? null,
-                'sentence' => $data['sentence'] ?? null,
-                'sentence_domain' => $data['sentence_domain'] ?? null,
-                'citation' => $data['citation'] ?? null,
-                'status' => $data['status'] ?? 'pending',
-            ]);
-
             // Create Write
             $write = Write::create([
                 'user_id' => $data['user_id'] ?? null,
@@ -71,7 +58,6 @@ class TranscriptionService
 
             return [
                 'success' => true,
-                'transcription' => $transcription,
                 'write' => $write,
             ];
         });

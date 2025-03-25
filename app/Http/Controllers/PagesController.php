@@ -259,12 +259,7 @@ class PagesController extends Controller
         try {
             if ($language) {
                 $bucketName = 'transcribedfile'; // Same bucket for now
-//                $s3Path = strtolower($language) === 'yoruba' ? '' : "{$language}/reviews/";
-                if (strtolower($language) === 'yoruba') {
-                    $s3Path = '';  // Yoruba files are directly in yoruba/ folder
-                } else {
-                    $s3Path = "{$language}/reviews/";  // Other languages use language/reviews/ structure
-                }
+                $s3Path = strtolower($language) === 'yoruba' ? '' : "{$language}/reviews/";
                 $region = env('AWS_DEFAULT_REGION', 'eu-central-1');
 
 

@@ -2,46 +2,71 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ProfileUpdateRequest;
-use App\Models\User;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\View\View;
-use Illuminate\Validation\Rules;
+use App\Models\User;
 
 class ProfileController extends Controller
 {
     public function updateprofile(Request $request)
     {
-        $user = Auth::user();
+        $user = User::find($request->input('user_id'));
+
         if (!$user) {
-            return redirect()->back()->with('error', 'User not found');
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User not found'
+            ], 404);
         }
+
         $user->update($request->only([
             'fullName', 'username', 'age', 'phone', 'sex', 'profession', 'ethnicity', 'nationality',
         ]));
-        return redirect()->back()->with('success', 'User profile updated successfully');
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'User profile updated successfully',
+            'data' => $user
+        ]);
     }
+
     public function updatechangeinfo(Request $request)
     {
-        $user = Auth::user();
+        $user = User::find($request->input('user_id'));
+
         if (!$user) {
-            return redirect()->back()->with('error', 'User not found');
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User not found'
+            ], 404);
         }
+
         $user->update($request->only([
-             'username', 'email',
+            'username', 'email',
         ]));
-        return redirect()->back()->with('success', 'User profile updated successfully');
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'User information updated successfully',
+            'data' => $user
+        ]);
     }
- public function updatedelete(Request $request)
+
+    public function updatedelete(Request $request)
     {
-        $user = Auth::user();
+        $user = User::find($request->input('user_id'));
+
         if (!$user) {
-            return redirect()->back()->with('error', 'User not found');
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User not found'
+            ], 404);
         }
+
         $user->delete();
-        return redirect()->back()->with('success', 'User profile delete successfully');
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'User profile deleted successfully'
+        ]);
     }
 }

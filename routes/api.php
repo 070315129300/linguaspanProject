@@ -2,7 +2,10 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
 
+use App\Http\Controllers\ProfileController; 
+use App\Http\Controllers\PagesController; 
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -17,3 +20,14 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::post('/user/login', [UserController::class, "login"]);
+Route::post('/user/register', [UserController::class, "createUser"]);
+Route::post('/user/forgetpassword', [UserController::class, "forgetpassword"]);
+Route::post('/user/resetpassword', [UserController::class, "resetpassword"]);
+
+Route::post('/index_analytics', [PagesController::class, 'index']);
+
+Route::post('/user/updateprofile', [ProfileController::class, 'updateprofile']);
+Route::post('/user/updatechangeinfo', [ProfileController::class, 'updatechangeinfo']);
+Route::post('/user/updatedelete', [ProfileController::class, 'updatedelete']);

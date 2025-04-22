@@ -46,10 +46,6 @@ class AdminController extends Controller
     }
 
 
-  public function login(){
-    return view('dashboard/adminlogin');
-}
-
     public function admindashboard()
     {
         $users = User::all(); // Retrieve all users

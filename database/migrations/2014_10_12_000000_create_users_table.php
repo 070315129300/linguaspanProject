@@ -28,6 +28,8 @@ return new class extends Migration
             $table->text('address')->nullable();
             $table->enum('role',['admin','agent','user'])->default('user');
             $table->enum('status',['active','inactive'])->default('active');
+            $table->string('token')->nullable();
+            $table->string('otp')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

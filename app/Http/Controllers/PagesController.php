@@ -23,144 +23,72 @@ use Aws\S3\S3Client;
 class PagesController extends Controller
 {
     public function index(Request $request)
-    {
-        // Get current year and month
-        $currentYear = Carbon::now()->year;
-        $currentMonth = Carbon::now()->month;
+{
+    $currentYear = Carbon::now()->year;
+    $currentMonth = Carbon::now()->month;
 
-        // Initialize arrays for months and values
-        $months = [];
-        $totalHoursData = [];
-        $approvedHoursData = [];
+    $months = [];
+    $totalHoursData = [];
+    $approvedHoursData = [];
 
-        // Loop through each month from January to the current month
-        for ($month = 1; $month <= $currentMonth; $month++) {
-            $monthLabel = Carbon::createFromDate($currentYear, $month, 1)->format('F'); // E.g., "January", "February"
-            $months[] = $monthLabel;
+    for ($month = 1; $month <= $currentMonth; $month++) {
+        $monthLabel = Carbon::createFromDate($currentYear, $month, 1)->format('F');
+        $months[] = $monthLabel;
 
-            // Get total hours for this month
-            $totalHours = Transcription::whereYear('created_at', $currentYear)
-                ->whereMonth('created_at', $month)
-                ->sum('hours');
+        $totalHours = Transcription::whereYear('created_at', $currentYear)
+            ->whereMonth('created_at', $month)
+            ->sum('hours');
 
-            // Get approved hours for this month
-            $approvedHours = Transcription::whereYear('created_at', $currentYear)
-                ->whereMonth('created_at', $month)
-                ->where('status', 'approved')
-                ->sum('hours');
+        $approvedHours = Transcription::whereYear('created_at', $currentYear)
+            ->whereMonth('created_at', $month)
+            ->where('status', 'approved')
+            ->sum('hours');
 
-            // Push data to arrays
-            $totalHoursData[] = $totalHours ?? 0;
-            $approvedHoursData[] = $approvedHours ?? 0;
-        }
-
-        // ============================ DAILY TRANSCRIPTIONS ============================
-
-        // Get the selected language from the request (default to empty for all languages)
-        $language = $request->query('language');
-
-        // Get today's start and end time
-        $todayStart = Carbon::today(); // Start of today (00:00)
-        $todayEnd = Carbon::today()->endOfDay(); // End of today (23:59)
-
-        // Initialize data for the daily chart
-        $intervals = [];
-        $dailyTotalHoursData = [];
-
-        // Loop through 24 hours in 2-hour intervals
-        for ($i = 0; $i < 24; $i += 2) {
-            // Define the start and end times for the 2-hour interval
-            $start = $todayStart->copy()->addHours($i);
-            $end = $start->copy()->addHours(2);
-
-            // Format the interval label (e.g., "00:00 - 02:00")
-            $label = $start->format('H:i') . ' - ' . $end->format('H:i');
-            $intervals[] = $label;
-
-            // Query to fetch transcriptions within the current 2-hour window
-            $query = Transcription::whereBetween('created_at', [$start, $end]);
-
-            // Apply language filter if a specific language is selected
-            if ($language) {
-                $query->where('language', $language);
-            }
-
-            // Sum the transcription hours for this interval
-            $dailyTotalHoursData[] = $query->sum('hours') ?? 0;
-        }
-
-        // ============================ FETCH AVAILABLE LANGUAGES ============================
-
-        $languages = Transcription::distinct()->pluck('language');
-
-        // Return view with all required data
-        return view('index', compact(
-            'months',
-            'totalHoursData',
-            'approvedHoursData',
-            'intervals',
-            'dailyTotalHoursData',
-            'languages' // Now available for the dropdown
-        ));
+        $totalHoursData[] = $totalHours ?? 0;
+        $approvedHoursData[] = $approvedHours ?? 0;
     }
 
+    // ========== DAILY TRANSCRIPTIONS ==========
 
-    public function login(){
-        return view('auth/login');
-    }
-    public function userlogin(Request $request)
-    {
-        // Validate the incoming request data
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
-        // Attempt to retrieve the user by email
-        $user = User::where('email', $request->email)->first();
-        // Check if the user exists
-        if (!$user) {
-            return back()->with('fail', 'This email is not registered');
-        }
-        // Check if the provided password matches the hashed password
-        if (!Hash::check($request->password, $user->password)) {
-            return back()->with('fail', 'Password mismatch');
-        }
-        // Log the user in
-        Auth::login($user);
+    $language = $request->query('language'); // ?language=yoruba
 
-        // Redirect based on user role
-        if ($user->role === 'admin') {
-            return redirect()->route('admindashboard'); // Redirect to admin dashboard
-        } else {
-            return redirect()->route('index'); // Redirect to index for regular users
+    $todayStart = Carbon::today();
+    $todayEnd = Carbon::today()->endOfDay();
+
+    $intervals = [];
+    $dailyTotalHoursData = [];
+
+    for ($i = 0; $i < 24; $i += 2) {
+        $start = $todayStart->copy()->addHours($i);
+        $end = $start->copy()->addHours(2);
+
+        $label = $start->format('H:i') . ' - ' . $end->format('H:i');
+        $intervals[] = $label;
+
+        $query = Transcription::whereBetween('created_at', [$start, $end]);
+
+        if ($language) {
+            $query->where('language', $language);
         }
+
+        $dailyTotalHoursData[] = $query->sum('hours') ?? 0;
     }
 
-    public function resetpassword(){
-        return view('auth/reset-password');
-    }
-    public function forgetpassword(){
-        return view('auth/forgot-password');
-    }
-//    public function contribute(Request $request)
-//    {
-//        try {
-//            // ✅ Fetch a random sentence, prioritizing English first
-//            $sentence = Write::where(function ($query) {
-//                $query->whereNull('status')
-//                    ->orWhere('status', 'approved');
-//            })
-//                ->orderByRaw("CASE WHEN language = 'english' THEN 1 ELSE 2 END") // Prioritize English
-//                ->inRandomOrder()
-//                ->first(); // Get ONE sentence
-//
-//        } catch (\Exception $e) {
-//            \Log::error("Database Fetch Error: " . $e->getMessage());
-//            $sentence = null;
-//        }
-//
-//        return view('contribute', compact('sentence'));
-//    }
+    $languages = Transcription::distinct()->pluck('language');
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Analytics data fetched successfully',
+        'data' => [
+            'months' => $months,
+            'totalHoursData' => $totalHoursData,
+            'approvedHoursData' => $approvedHoursData,
+            'intervals' => $intervals,
+            'dailyTotalHoursData' => $dailyTotalHoursData,
+            'languages' => $languages
+        ]
+    ]);
+}
 
 
 
@@ -370,57 +298,55 @@ class PagesController extends Controller
     public function listen()
     {
         try {
-            // ✅ Get all files from 'english/all_audio/' folder in S3
-            $files = Storage::disk('s3')->files('english/all_audio');
+            $bucketName = 'transcribedfile';
+            $region = env('AWS_DEFAULT_REGION', 'eu-central-1');
+            $language = 'yoruba'; // Or get from request
+            $s3Path = "{$language}/all_audio/";
 
-            if (!empty($files)) {
-                $bucketName = 'transcribedfile';
-                $region = env('AWS_DEFAULT_REGION', 'eu-central-1'); // Ensure region matches
+            // Get files from S3
+            $files = Storage::disk('s3')->files($s3Path);
+            shuffle($files); // Randomize file order
 
-                do {
-                    // ✅ Pick a random file
-                    $randomFile = $files[array_rand($files)];
+            $transcription = null; // Default value if none found
 
-                    // ✅ Convert relative path to full Object URL
-                    $objectUrl = "https://{$bucketName}.s3.{$region}.amazonaws.com/{$randomFile}";
+            foreach ($files as $file) {
+                $objectUrl = "https://{$bucketName}.s3.{$region}.amazonaws.com/{$file}";
 
+                // Find matching transcription
+                $transcription = Transcription::where('fileurl', $objectUrl)
+                    ->where(function($query) {
+                        $query->whereNull('status')
+                            ->orWhere('status', '0');
+                    })
+                    ->first();
 
-                    // ✅ Check if the file exists in the Write table
-                    $fileRecord = Transcription::where('fileurl', $objectUrl)
-
-
-                        ->where(function ($query) {
-                            $query->whereNull('status')->orWhere('status', '0');
-                        })
-                        ->first();
-
-                    // ✅ If a matching file is found, generate a temporary URL
-                    if ($fileRecord) {
-                        $audioUrl = Storage::disk('s3')->temporaryUrl($randomFile, now()->addHour());
-                        break; // Stop loop when a valid file is found
-                    }
-
-                } while (count($files) > 1); // Keep looping until a valid file is found
+                if ($transcription) {
+                    // Generate temporary URL
+                    $audioUrl = Storage::disk('s3')->temporaryUrl($file, now()->addHour());
 
 
-                // ✅ If no valid file is found, set null
-                if (!$fileRecord) {
-                    $audioUrl = null;
+                    // Prepare data structure matching your working example
+                    $sentence = [
+                        'id' => uniqid(),
+                        'sentence' => $transcription->sentence,
+                        'file_name' => $transcription->fileName,
+                        'file_url' => $audioUrl,
+                        'language' => $transcription->language
+                    ];
+
+                    return view('listen', compact('sentence'));
                 }
-            } else {
-                $fileRecord = null;
-                $audioUrl = null;
             }
 
+            // If no matches found
+            return view('listen', ['sentence' => null]);
 
         } catch (\Exception $e) {
-            \Log::error("S3 Fetch Error: " . $e->getMessage());
-            $fileRecord = null;
-            $audioUrl = null;
+            \Log::error("Listen Error: " . $e->getMessage());
+            return view('listen', ['sentence' => null]);
         }
-
-        return view('listen', compact('fileRecord', 'audioUrl'));
     }
+
 
 
 
@@ -485,105 +411,65 @@ class PagesController extends Controller
 
         return response()->json(['message' => 'Record updated successfully']);
     }
-
-
     public function getnextlisten(Request $request)
     {
         $language = $request->query('language');
 
         try {
-            // ✅ Query for an untranscribed sentence in the database
-            $query = Write::where(function ($q) {
-                $q->whereNull('status')->orWhere('status', 'pending');
-            })->where(function ($q) {
-                $q->whereNull('transcribe')->orWhere('transcribe', 0); // Only untranscribed files
-            });
+            // Get pending transcription record
+            $transcription = Transcription::where(function($q) {
+                $q->whereNull('status')->orWhere('status', '0');
+            })
+                ->where('language', $language)
+                ->first();
 
-            if ($language) {
-                $query->where('language', $language);
+            if (!$transcription) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No sentences available for review'
+                ], 404);
             }
 
-            $sentence = $query->inRandomOrder()->first();
+            // Extract filename from S3 URL
+            $filePath = parse_url($transcription->fileurl, PHP_URL_PATH);
+            $fileKey = ltrim($filePath, '/'); // Remove leading slash
 
-            if (!$sentence) {
-                return response()->json(['message' => 'Not available'], 404);
+            // Verify file exists in S3
+            if (!Storage::disk('s3')->exists($fileKey)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Audio file not found in storage'
+                ], 404);
             }
 
-            // ✅ Determine the correct S3 bucket and path
-            $bucketName = 'transcribedfile';
-            $s3Path = "{$language}/all_audio/";
-            $region = env('AWS_DEFAULT_REGION', 'eu-central-1');
+            // Generate temporary URL
+            $audioUrl = Storage::disk('s3')->temporaryUrl(
+                $fileKey,
+                now()->addHour()
+            );
 
-            // ✅ Initialize S3 client
-            $s3Client = new S3Client([
-                'region'      => $region,
-                'version'     => 'latest',
-                'credentials' => [
-                    'key'    => env('AWS_ACCESS_KEY_ID'),
-                    'secret' => env('AWS_SECRET_ACCESS_KEY'),
-                ],
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'id' => $transcription->id,
+                    'sentence' => $transcription->sentence,
+                    'audio_url' => $audioUrl,
+                   // 'expires_at' => now()->addHour()->toDateTimeString(),
+                    'language' => $transcription->language,
+                    'file_name' => $transcription->fileName
+                ]
             ]);
-
-            // ✅ Fetch all files from S3
-            $objects = $s3Client->listObjects([
-                'Bucket' => $bucketName,
-                'Prefix' => $s3Path,
-            ]);
-
-            $s3Files = [];
-            if (isset($objects['Contents'])) {
-                foreach ($objects['Contents'] as $object) {
-                    $s3Files[] = $object['Key']; // Store the relative path
-                }
-            }
-
-            // ✅ Pick a file that hasn't been transcribed
-            $randomS3File = null;
-            $fileUrl = null;
-
-            if (!empty($s3Files)) {
-                do {
-                    $randomFile = $s3Files[array_rand($s3Files)];
-
-                    // ✅ Convert to full Object URL before querying
-                    $objectUrl = "https://{$bucketName}.s3.{$region}.amazonaws.com/{$randomFile}";
-
-                    // ✅ Check if the file exists in the Write table and is untranscribed
-                    $fileRecord = Write::where('file_path', $objectUrl)
-                        ->where(function ($q) {
-                            $q->whereNull('status')->orWhere('status', 'approved');
-                        })
-                        ->where(function ($q) {
-                            $q->whereNull('transcribe')->orWhere('transcribe', 0);
-                        })
-                        ->first();
-
-                    if ($fileRecord) {
-                        $randomS3File = $randomFile;
-                        $fileUrl = Storage::disk('s3')->temporaryUrl($randomFile, now()->addHour()); // Generate temporary URL
-                        break;
-                    }
-
-                } while (count($s3Files) > 1);
-            }
-
-            // If no valid file found, return null
-            if (!$randomS3File) {
-                return response()->json(['message' => 'No available audio files'], 404);
-            }
 
         } catch (\Exception $e) {
-            \Log::error("S3 Fetch Error: " . $e->getMessage());
-            return response()->json(['message' => 'Error fetching files'], 500);
+            \Log::error("Listen Error: " . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error processing request',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        return response()->json([
-            'sentence'      => $sentence,
-            'randomS3File'  => $randomS3File,
-            'fileUrl'       => $fileUrl,
-        ]);
     }
-
+  
 
 
     public function review()
@@ -610,15 +496,6 @@ class PagesController extends Controller
 
         return view('review', compact('sentence'));
     }
-
-
-    public function write(){
-        return view('write');
-    }
-//    public function language(){
-//
-//        return view('languages');
-//    }
 
     public function language()
     {
@@ -655,9 +532,7 @@ class PagesController extends Controller
         return view('data_collection', compact('totalHours', 'approvedHours', 'totalLanguages', 'languages'));
     }
 
-    public function about(){
-        return view('about');
-    }
+
     public function stats(Request $request)
     {
         // Get the logged-in user
@@ -757,30 +632,5 @@ class PagesController extends Controller
     }
 
 
-    public function profiles()
-    {
-        if (Auth::check()) {
-            $user = Auth::user();
-            return view('profile', ['user' => $user]);
-        }
-        return redirect()->route('login')->with('error', 'You must be logged in to view your profile.');
-    }
-    public function changeinfo(){
-        if (Auth::check()) {
-            $user = Auth::user();
-            return view('change_info', ['user' => $user]);
-        }
-        return redirect()->route('login')->with('error', 'You must be logged in to view your profile.');
-    }
-    public function delete_profile(){
-        if (Auth::check()) {
-            $user = Auth::user();
-            return view('delete_profile', ['user' => $user]);
-        }
-        return redirect()->route('login')->with('error', 'You must be logged in to view your profile.');
-    }
-    public function download(){
-        return view('download_data');
-    }
 
 }

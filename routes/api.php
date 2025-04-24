@@ -17,19 +17,22 @@ use App\Http\Controllers\PagesController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
-Route::view('/index', 'index');
-
+// Public Routes
 Route::post('/user/login', [UserController::class, "login"]);
 Route::post('/user/register', [UserController::class, "createUser"]);
 Route::post('/user/forgetpassword', [UserController::class, "forgetpassword"]);
 Route::post('/user/resetpassword', [UserController::class, "resetpassword"]);
-
 Route::post('/index_analytics', [PagesController::class, 'index']);
+Route::post('/user/stats', [PagesController::class, 'stats']);
+Route::get('/language-stats', [PagesController::class, 'language']);
 
-Route::post('/user/updateprofile', [ProfileController::class, 'updateprofile']);
-Route::post('/user/updatechangeinfo', [ProfileController::class, 'updatechangeinfo']);
-Route::post('/user/updatedelete', [ProfileController::class, 'updatedelete']);
+// Protected Routes (Require Bearer Token)
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+
+    Route::post('/user/updateprofile', [ProfileController::class, 'updateprofile']);
+    Route::post('/user/updatechangeinfo', [ProfileController::class, 'updatechangeinfo']);
+    Route::post('/user/updatedelete', [ProfileController::class, 'updatedelete']);
+});

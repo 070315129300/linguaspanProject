@@ -3,20 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller
 {
     public function updateprofile(Request $request)
     {
-        $user = User::find($request->input('user_id'));
-
-        if (!$user) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'User not found'
-            ], 404);
-        }
+        $user = Auth::user(); // Get the authenticated user
 
         $user->update($request->only([
             'fullName', 'username', 'age', 'phone', 'sex', 'profession', 'ethnicity', 'nationality',
@@ -31,14 +24,7 @@ class ProfileController extends Controller
 
     public function updatechangeinfo(Request $request)
     {
-        $user = User::find($request->input('user_id'));
-
-        if (!$user) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'User not found'
-            ], 404);
-        }
+        $user = Auth::user(); // Get the authenticated user
 
         $user->update($request->only([
             'username', 'email',
@@ -53,14 +39,7 @@ class ProfileController extends Controller
 
     public function updatedelete(Request $request)
     {
-        $user = User::find($request->input('user_id'));
-
-        if (!$user) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'User not found'
-            ], 404);
-        }
+        $user = Auth::user(); // Get the authenticated user
 
         $user->delete();
 

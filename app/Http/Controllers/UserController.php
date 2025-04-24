@@ -15,52 +15,70 @@ class UserController extends Controller
      * USER REGISTRATION
      */
     
-    public function createUser(Request $request)
-    {
-        
-        // $validated = $request->validate([
-        //     'fullName'    => 'required|string|max:255',
-        //     'username'    => 'nullable|string|max:255',
-        //     'email'       => 'required|email|unique:users,email',
-        //     'password'    => 'required|string|min:8|confirmed',
-        //     'age'         => 'nullable|string|max:3',
-        //     'phone'       => 'nullable|string|max:15',
-        //     'sex'         => 'nullable|string|in:male,female,other',
-        //     'profession'  => 'nullable|string|max:255',
-        //     'language'    => 'nullable|string|max:255',
-        //     'ethnicity'   => 'nullable|string|max:255',
-        //     'nationality' => 'nullable|string|max:255',
-        //     'address'     => 'nullable|string',
-        //     'role'        => 'nullable|in:admin,agent,user',
-        //     'status'      => 'nullable|in:active,inactive',
-        // ]);
+     public function createUser(Request $request)
+     {
+         $email = $request->input('email');
+     
+         // Check if email is already taken
+         if (User::where('email', $email)->exists()) {
+             return response()->json([
+                 'message' => 'Email has already been taken',
+             ], 409); // 409 Conflict
+         }
+     
+         // Create user if email is unique
+         $user = User::create([
+             'fullName'    => $request['fullName'],
+             'username'    => $request['username'] ?? null,
+             'email'       => $email,
+             'password'    => Hash::make($request['password']),
+             'age'         => $request['age'] ?? null,
+             'phone'       => $request['phone'] ?? null,
+             'sex'         => $request['sex'] ?? null,
+             'profession'  => $request['profession'] ?? null,
+             'language'    => $request['language'] ?? null,
+             'ethnicity'   => $request['ethnicity'] ?? null,
+             'nationality' => $request['nationality'] ?? null,
+             'address'     => $request['address'] ?? null,
+             'role'        => $request['role'] ?? 'user',
+             'status'      => $request['status'] ?? 'active',
+         ]);
+     
+         return response()->json([
+             'message' => 'User created successfully',
+             'user'    => $user
+         ], 201);
+     }
 
-        // var_dump('cay', validated);
-        // die();
-    
-        $user = User::create([
-            'fullName'    => $request['fullName'],
-            'username'    => $request['username'] ?? null,
-            'email'       => $request['email'],
-            'password'    => Hash::make($request['password']),
-            'age'         => $request['age'] ?? null,
-            'phone'       => $request['phone'] ?? null,
-            'sex'         => $request['sex'] ?? null,
-            'profession'  => $request['profession'] ?? null,
-            'language'    => $request['language'] ?? null,
-            'ethnicity'   => $request['ethnicity'] ?? null,
-            'nationality' => $request['nationality'] ?? null,
-            'address'     => $request['address'] ?? null,
-            'role'        => $request['role'] ?? 'user',
-            'status'      => $request['status'] ?? 'active',
-        ]);
-    
-        return response()->json([
-            'message' => 'User created successfully',
-            'user'    => $user
-        ], 201);
-    }
+     
 
+    /**
+     * LOGIN
+     */
+     
+     public function login(Request $request)
+     {
+         $credentials = $request->validate([
+             'email' => 'required|email',
+             'password' => 'required|string',
+         ]);
+     
+         $user = User::where('email', $credentials['email'])->first();
+     
+         if (!$user || !Hash::check($credentials['password'], $user->password)) {
+             return response()->json(['message' => 'Invalid credentials'], 401);
+         }
+     
+         // Sanctum token generation
+         $token = $user->createToken('api-token')->plainTextToken;
+     
+         return response()->json([
+             'message' => 'Login successful',
+             'user' => $user,
+             'token' => $token, // This is the Bearer token to be used in Authorization header
+         ]);
+     }
+     
 
     public function getAllUsers()
     {
@@ -109,64 +127,20 @@ class UserController extends Controller
         return $user;
     }
     
-
-    /**
-     * LOGIN
-     */
-   
-     public function login(Request $request)
-     {
-         $credentials = $request->validate([
-             'email' => 'required|email',
-             'password' => 'required|string',
-         ]);
-     
-         $user = User::where('email', $credentials['email'])->first();
-     
-         if (!$user || !Hash::check($credentials['password'], $user->password)) {
-             return response()->json(['message' => 'Invalid credentials'], 401);
-         }
-     
-         // Manually generate and save token
-         $token = Str::random(10);
-         $user->token = $token;
-         $user->save();
-     
-         return response()->json([
-             'message' => 'Login successful',
-             'user' => $user,
-             'token' => $token
-         ]);
-     }
      
 
     /**
      * LOGOUT
      */
    
-    public function logout(Request $request)
-    {
-        $authHeader = $request->header('Authorization');
-    
-        if (!$authHeader || !str_starts_with($authHeader, 'Bearer ')) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
-    
-        $token = substr($authHeader, 7); // Remove "Bearer " from the header
-    
-        // Find user by token
-        $user = User::where('token', $token)->first();
-    
-        if (!$user) {
-            return response()->json(['message' => 'Invalid token'], 401);
-        }
-    
-        // Clear the token from the database
-        $user->token = null;
-        $user->save();
-    
-        return response()->json(['message' => 'Logout successful']);
-    }
+     public function logout(Request $request)
+     {
+         $request->user()->currentAccessToken()->delete();
+     
+         return response()->json([
+             'message' => 'Logout successful'
+         ]);
+     }
 
     /**
      *  FORGOT PASSWORD (SEND OTP)

@@ -180,9 +180,7 @@ class AdminController extends Controller
         return view('dashboard/Roles', compact('users', 'adminCount', 'userCount', 'moderatorCount', 'transcriberCount'));
     }
 
-public function permission(){
-    return view('dashboard/permissions');
-}
+
 
     public function userManagement(Request $request)
     {

@@ -499,137 +499,129 @@ class PagesController extends Controller
 
     public function language()
     {
-//        if (auth()->user()->role !== 'admin') {
-//            return redirect()->route('index')->with('error', 'Unauthorized access!');
-//        }
-
         $languages = Transcription::select(
             'language',
             DB::raw('COUNT(*) as total'),
-//            DB::raw(SUM(CAST(hours AS DECIMAL(10,2))) as total_hours),
             DB::raw('SUM(CASE WHEN status = "approved" THEN CAST(hours AS DECIMAL(10,2)) ELSE 0 END) as approved_hours'),
             DB::raw('COUNT(CASE WHEN type = "speak" THEN 1 END) as speakers'),
             DB::raw('COUNT(CASE WHEN type = "write" THEN 1 END) as writers')
         )
-            ->whereNotNull('language')
-            ->groupBy('language')
-            ->get();
-
-        return view('languages',compact('languages'));
+        ->whereNotNull('language')
+        ->groupBy('language')
+        ->get();
+    
+        return response()->json([
+            'data' => $languages
+        ]);
     }
+    
+
     public function dataCollection()
-    {
-        // Get total hours transcribed
-        $totalHours = Transcription::sum('hours');
+{
+    // Get total hours transcribed
+    $totalHours = Transcription::sum('hours');
 
-        // Get total approved hours
-        $approvedHours = Transcription::where('status', 'approved')->sum('hours');
+    // Get total approved hours
+    $approvedHours = Transcription::where('status', 'approved')->sum('hours');
 
-        // Get unique languages
-        $languages = Transcription::distinct()->pluck('language')->toArray(); // Unique languages
-        $totalLanguages = count($languages); // Count of unique languages
+    // Get unique languages
+    $languages = Transcription::distinct()->pluck('language')->toArray();
+    $totalLanguages = count($languages);
 
-        return view('data_collection', compact('totalHours', 'approvedHours', 'totalLanguages', 'languages'));
-    }
+    // Return JSON response
+    return response()->json([
+        'totalHours' => $totalHours,
+        'approvedHours' => $approvedHours,
+        'totalLanguages' => $totalLanguages,
+        'languages' => $languages
+    ]);
+}
 
 
     public function stats(Request $request)
     {
-        // Get the logged-in user
-        $user = auth()->user();
-
-        // Get selected language (default: all)
-        $language = $request->query('language');
-
-        // Fix: Use fresh Carbon instances to avoid mutation issues
-        $todayStart = Carbon::today()->startOfDay();
-        $todayEnd = Carbon::today()->endOfDay();
-
-        // Initialize data for the bar chart
+        // Accepting JSON input
+        $language = $request->input('language');
+    
+        // Get the authenticated user manually (for API)
+        $user = User::find($request->input('user_id'));
+    
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+    
         $intervals = [];
         $dailyTotalHoursData = [];
-
-        // Loop through 24 hours in 2-hour intervals
+    
         for ($i = 0; $i < 24; $i += 2) {
             $start = Carbon::today()->startOfDay()->addHours($i);
             $end = $start->copy()->addHours(2);
-
-            // Format label (e.g., "00:00 - 02:00")
+    
             $label = $start->format('H:i') . ' - ' . $end->format('H:i');
             $intervals[] = $label;
-
-            // Query transcriptions
+    
             $query = Transcription::where('userid', $user->id)
                 ->whereBetween('created_at', [$start, $end]);
-
-            // Apply language filter if needed
+    
             if ($language) {
                 $query->where('language', $language);
             }
-
-            // Sum transcription hours for the interval
+    
             $totalHours = $query->sum('hours');
-
-            // Ensure value is at least 0 (avoid null issues)
             $dailyTotalHoursData[] = $totalHours ?? 0;
         }
-
-        // ✅ Fetch total transcriptions by user
+    
         $totalUserTranscriptions = Transcription::where('userid', $user->id);
         if ($language) {
             $totalUserTranscriptions->where('language', $language);
         }
         $totalUserTranscriptions = $totalUserTranscriptions->count();
-
-        // ✅ Fetch total approved transcriptions by user
+    
         $totalUserApprovedTranscriptions = Transcription::where('userid', $user->id)
             ->where('status', 'approved');
         if ($language) {
             $totalUserApprovedTranscriptions->where('language', $language);
         }
         $totalUserApprovedTranscriptions = $totalUserApprovedTranscriptions->count();
-
-        // ✅ Fetch total transcriptions overall
+    
         $totalTranscriptions = Transcription::query();
         if ($language) {
             $totalTranscriptions->where('language', $language);
         }
         $totalTranscriptions = $totalTranscriptions->count();
-
-        // ✅ Fetch total approved transcriptions overall
+    
         $totalApprovedTranscriptions = Transcription::where('status', 'approved');
         if ($language) {
             $totalApprovedTranscriptions->where('language', $language);
         }
         $totalApprovedTranscriptions = $totalApprovedTranscriptions->count();
-
-        // ✅ Fetch top 5 contributors by total transcription hours
+    
         $topContributors = Transcription::select('userid', DB::raw('SUM(hours) as total_hours'))
             ->groupBy('userid')
             ->orderByDesc('total_hours')
             ->limit(5)
             ->get();
-
-        // Attach user full names
+    
         foreach ($topContributors as $contributor) {
-            $user = User::find($contributor->userid);
-            $contributor->fullName = $user ? $user->fullName : 'Unknown';
+            $contributorUser = User::find($contributor->userid);
+            $contributor->fullName = $contributorUser ? $contributorUser->fullName : 'Unknown';
         }
-
-        // Get available languages for dropdown
+    
         $languages = Transcription::whereNotNull('language')->distinct()->pluck('language');
-
-        return view('stats', compact(
-            'intervals',
-            'dailyTotalHoursData',
-            'languages',
-            'totalUserTranscriptions',
-            'totalUserApprovedTranscriptions',
-            'totalTranscriptions',
-            'totalApprovedTranscriptions',
-            'topContributors'
-        ));
+    
+        // JSON response
+        return response()->json([
+            'intervals' => $intervals,
+            'dailyTotalHoursData' => $dailyTotalHoursData,
+            'languages' => $languages,
+            'totalUserTranscriptions' => $totalUserTranscriptions,
+            'totalUserApprovedTranscriptions' => $totalUserApprovedTranscriptions,
+            'totalTranscriptions' => $totalTranscriptions,
+            'totalApprovedTranscriptions' => $totalApprovedTranscriptions,
+            'topContributors' => $topContributors
+        ]);
     }
+    
 
 
 

@@ -27,8 +27,8 @@ return new class extends Migration
             $table->string('nationality')->nullable();
             $table->text('address')->nullable();
             $table->enum('role',['admin','agent','user'])->default('user');
-            $table->enum('status',['active','inactive'])->default('active');
-            $table->string('token')->nullable();
+            $table->enum('status',['active','inactive'])->default('active'); 
+            $table->string('balance')->nullable();
             $table->string('otp')->nullable();
             $table->rememberToken();
             $table->timestamps();

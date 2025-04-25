@@ -48,4 +48,5 @@ class ProfileController extends Controller
             'message' => 'User profile deleted successfully'
         ]);
     }
+
 }
